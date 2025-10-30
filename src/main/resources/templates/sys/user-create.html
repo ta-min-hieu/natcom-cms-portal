@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{cms_layout_1.html}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+</head>
+
+<body>
+<div class="content" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form id="form-create-user" th:action="@{/sys/user/save}" class="create-role" method="post"
+                      th:object="${user}">
+                    <div class="row mb-3">
+                        <div class="col-12 col-md-4 mb-3">
+                            <label for="username" ><span>Username <span style="color: red;">*</span></span></label>
+                            <input type="text" id="username" th:field=*{username} name="username"
+                                   class="form-control" placeholder="username" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12 col-md-4 mb-3">
+                            <label for="name"  >[[#{name}]] <span style="color:red"> *</span></label>
+                            <input type="text" id="name" th:field=*{name} name="name" class="form-control"
+                                   th:placeholder="#{name}"
+                                   aria-label="name" required>
+                            <p style="color:red;font-size:12px;" th:if="${#fields.hasErrors('name')}"
+                               th:errors="*{name}" required></p>
+                        </div>
+                        <div class="col-12 col-md-4 mb-3">
+                            <label for="phone">[[#{phone}]] <span style="color:red"> *</span></label>
+                            <input type="text" id="phone" th:field=*{phone} name="phone"
+                                   class="form-control" th:placeholder="#{phone}" aria-label="Fullname"
+                                   required>
+                            <p style="color:red;font-size:12px;" th:if="${#fields.hasErrors('phone')}"
+                               th:errors="*{phone}"></p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12 col-md-4 mb-3">
+                            <label for="password"  >[[#{pass}]] <span style="color:red"> *</span></label>
+                            <input type="password" id="password" th:field=*{password} name="password"
+                                   value="${password}" class="form-control" th:placeholder="#{pass}"
+                                   aria-label="password" required>
+                            <p style="color:red;font-size:12px;" th:if="${#fields.hasErrors('password')}"
+                               th:errors="*{password}"></p>
+                        </div>
+                        <div class="col-12 col-md-4 mb-3">
+                            <label for="password2" > [[#{confirm}]] <span
+                                    style="color:red">*</span></label>
+                            <input type="password" id="password2" th:field=*{password2} name="password2"
+                                   class="form-control" th:placeholder="#{confirm}"
+                                   aria-label="password2" required>
+                            <p style="color:red;font-size:12px;" th:if="${#fields.hasErrors('password2')}"
+                               th:errors="*{password2}"></p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12 col-md-4 mb-3">
+                            <label for="partner"><span>[[#{partner}]]</span></label>
+                            <select class="form-control select2bs4" id="partner" name="partnerId" style="width: 100%"></select>
+                        </div>
+
+                        <div class="col-12 col-md-4 mb-3" th:insert="component :: select2-v2('GET', #{shop}, 'showroomId', *{showroomId}, '/selfcare/shop/ajax-search', 'Choose shop', *{shop?.name}, false, false, 0, null)"></div>
+                        <div class="col-12 col-md-4 mb-3" th:insert="component :: select2-v2('GET', #{branch}, 'branchId', *{branchId}, '/selfcare/ftth-register/ajax-search-branch', 'Choose branch', *{ftthBranch?.name}, false, false, 0, null)"></div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col d-flex align-items-end justify-content-center pt-3" style="padding-left: 0 !important;">
+                            <span th:with="buttonText=*{id != null} ? #{update} : #{save}">
+                                <button id="submitButton" type="submit" class="btn btn-primary" th:text="${buttonText}" style="width: 125px; border-radius: 3px;"></button>
+                            </span>
+                            <a th:href="@{/sys/user/index}" class="btn btn-primary me-md-2 ml-3" th:text="#{back}" style="width: 125px; left: 886px; top: 389px; border-radius: 3px;"></a>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script layout:fragment="content_page_script">
+    $('#partner').select2({
+        ajax: {
+            type: 'GET',
+            url: '[[${@environment.getProperty('server.servlet.context-path')}]]/sys/user/ajax-search',
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+                return {
+                    input_: params.term
+                };
+            },
+            processResults: function(data) {
+                return {
+                    results: data
+                };
+            },
+            cache: true
+        },
+        placeholder: `[[#{select2.partner}]]`,
+        minimumInputLength: 0,
+        allowClear: true
+    });
+</script>
+</html>

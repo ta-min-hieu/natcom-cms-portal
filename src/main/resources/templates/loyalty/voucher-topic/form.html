@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{cms_layout_1.html}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body id="page-top">
+<div class="content" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form id="form" th:action="@{/loyalty/voucher-topic/form}" class="create-role" method="post"
+                      th:object="${model}" enctype="multipart/form-data">
+                    <div th:replace="component :: input-hidden('id', *{id})"></div>
+                    <div class="row">
+                        <div class="col-6 mt-3"
+                             th:insert="component :: input-text-v3(#{name}, 'name', *{name}, 0, 255, true, false, false)"></div>
+                        <div class="col-6 mt-3" th:with="options=${@thymeleaf.arrays('1', 'Active', '0', 'Inactive')}">
+                            <div th:replace="component :: select-default-v2(#{status}, 'status', *{status == null ? 1 : status}, false, false, ${options})"></div>
+                        </div>
+                        <div class="col-6 mt-3"
+                             th:insert="component :: textarea-v1(#{description}, 'description', *{description}, 4, 0, 1024, false, false)"></div>
+                        <div class="col-6 mt-3">
+                            <div style="max-width: 440px;"
+                                 th:insert="component :: crop-image('thumbUpload1', #{imageUrl}, *{iconUrl}, 150, 330, 330, 330, 330, *{id == null ? true : false})"></div>
+                        </div>
+                    </div>
+                    <div class="col d-flex align-items-end justify-content-center pt-3"
+                         style="padding-left: 0 !important;">
+            <span th:with="buttonText=*{id != null} ? #{update} : #{save}">
+                <button id="submitButton" type="submit" class="btn btn-primary" th:text="${buttonText}"
+                        style="width: 125px; border-radius: 3px;"></button>
+            </span>
+                        <a th:href="@{/loyalty/voucher-topic/index}" class="btn btn-primary me-md-2 ml-3"
+                           th:text="#{back}" style="width: 125px; left: 886px; top: 389px; border-radius: 3px;"></a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script layout:fragment="content_page_script" th:inline="javascript">
+</script>
+</html>

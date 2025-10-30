@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{cms_layout_1.html}">
+<head>
+</head>
+<body id="page-top">
+<div class="content" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form th:action="@{'/loyalty/voucher-group/index'}" method="get">
+                    <div class="row">
+                        <div class="col-3" th:insert="component :: input-text-v3(#{name}, 'name', *{name}, 0, 255, false, false, false)"></div>
+                        <div class="col-3" th:with="options=${@thymeleaf.arrays('', 'All', '1', 'Active', '0', 'In-active')}">
+                            <div th:replace="component :: select-default-v2(#{status}, 'status', *{status}, false, false, ${options})"></div>
+                        </div>
+                        <div class="col-3" th:insert="component :: input-date-ranger-v2(#{dateExpired}, 'dateExpireds', *{dateExpireds}, false, false, 'YYYY-MM-DD', 6, 0)"></div>
+
+                        <div th:class="'col-12 text-center pt-3'" class="col-12 text-center pt-3">
+                            <button type="submit" style="cursor: pointer;" class="btn btn-primary mx-2">
+                                <i class="fas fa-search"></i><span class="px-2" th:text="#{search}"></span>
+                            </button>
+                            <button id="reset" type="button" value="Reset" style="cursor: pointer;" class="btn btn-primary mx-2">
+                                <i class="fa fa-refresh"></i><span class="px-2" th:text="#{reset}"></span>
+                            </button>
+                            <a th:href="@{/loyalty/voucher-group/form}" style="cursor: pointer;" class="btn btn-primary mx-2">
+                                <i class="fas fa-plus"></i><span class="px-2" th:text="#{create}"></span>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body table-responsive">
+                <table class="table custom-table table-bordered">
+                    <thead class="thead-light">
+                    <tr>
+                        <th scope="col" th:text="#{no}" class="text-center"></th>
+                        <th scope="col" th:text="#{name}" class="text-center"></th>
+                        <th scope="col" th:text="#{icon}" class="text-center"></th>
+                        <th scope="col" th:text="#{point}" class="text-center"></th>
+                        <th scope="col" th:text="#{discountAmount}" class="text-center"></th>
+                        <th scope="col" th:text="#{quantityTotal}" class="text-center"></th>
+                        <th scope="col" th:text="#{quantityExchanged}" class="text-center"></th>
+                        <th scope="col" th:text="#{startDate}" class="text-center"></th>
+                        <th scope="col" th:text="#{dateExpired}" class="text-center"></th>
+                        <th scope="col" th:text="#{createdAt}" class="text-center"></th>
+                        <th scope="col" th:text="#{status}" class="text-center"></th>
+                        <th scope="col" th:text="#{action}" class="text-center"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="model, item:${models}">
+                        <td class="text-center" th:text="${item.index + pageSize*currentPage - (pageSize - 1)}">1</td>
+                        <td th:text="${model.name}"></td>
+                        <td class="text-center">
+                            <div th:if="${model.imageUrl}" class="dropdown">
+                                <img class="dropdown-toggle" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                     style="height: 35px;width:35px" th:src="${@thymeleaf.mediaUrl(model.imageUrl)}">
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                    <img style="height: 200px;width:200px" th:src="${@thymeleaf.mediaUrl(model.imageUrl)}">
+                                </div>
+                            </div>
+                        </td>
+                        <td th:text="${@thymeleaf.formatNumber(model?.point) + ' ' + model?.pointUnit}"></td>
+                        <td th:text="${@thymeleaf.formatNumber(model.amount)}"></td>
+                        <td th:text="${@thymeleaf.formatNumber(model?.quantityTotal)}"></td>
+                        <td th:text="${@thymeleaf.formatNumber(model?.quantityExchanged)}"></td>
+                        <td th:text="${#dates.format(model.startDate, 'yyyy-MM-dd HH:mm:ss')}" style="white-space: nowrap;" class="text-center"></td>
+                        <td th:text="${#dates.format(model.endDate, 'yyyy-MM-dd HH:mm:ss')}" style="white-space: nowrap;" class="text-center"></td>
+                        <td th:text="${#dates.format(model.createdAt, 'yyyy-MM-dd HH:mm:ss')}" style="white-space: nowrap;" class="text-center"></td>
+                        <td class="text-right">
+                            <span th:if="${model.status == 0}" th:text="'In-active'"></span>
+                            <span th:if="${model.status == 1}" th:text="#{active}"></span>
+                        </td>
+                        <td class="text-center" style="white-space: nowrap;">
+                            <div class="d-flex justify-content-center align-items-center flex-wrap" style="gap: 5px;">
+                                <!--                                <a th:if="${role && model.status == 1 && isPartner}" href="javascript:void(0)" class="btn" th:attr="onclick=|approve('${model.id}', '${model.name}', '${model.type}')|">-->
+                                <!--                                    <i class="fas fa-thumbs-up" style="color: green;" th:title="#{approve}"></i>-->
+                                <!--                                </a>-->
+
+                                <a th:href="@{'/loyalty/voucher-group/form?id=' + ${model.id}}" title="Update" class="btn"><i class="far fa-edit" style="color: #00709e;"></i></a>
+                                <a th:attr="onclick=|delete1('${model.id}', '${currentPage}', '${pageSize}')|" title="Delete" class="btn"><i class="fas fa-trash-alt" style="color: #ff0000;"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div th:with="paramNames=${@thymeleaf.arrays('name', name, 'status', status, 'dateExpireds', dateExpired)}">
+                    <div th:insert="common :: table-paging-hieutm(${currentPage}, ${pageSize}, ${totalPages}, ${totalItems}, ${paramNames})"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="delete-modal-sm">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" th:text="#{action.todo}"></h4>
+                </div>
+                <div class="modal-body">
+                    <p th:text="#{apply.delete}"></p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button id="apply" type="button" class="btn btn-primary" th:text="#{apply}"></button>
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script layout:fragment="content_page_script" th:inline="javascript">
+    function delete1(id, page, pageSize) {
+        if(page == null || page == "" || page == "null")
+            page = 1;
+        $("#delete-modal-sm").modal('show');
+        $("#apply").click(function() {
+            window.location.href = [[${@environment.getProperty('server.servlet.context-path')}]] + `/loyalty/voucher-group/delete/${page}?id=${id}&pageSize=${pageSize}`;
+            $('#delete-modal-sm').modal('hide');
+        });
+    }
+</script>
+</html>

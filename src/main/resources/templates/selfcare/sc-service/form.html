@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{cms_layout_1.html}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body id="page-top">
+<div class="content" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form id="form" th:action="@{/selfcare/sc-service/form}" class="create-role" method="post"
+                      th:object="${model}" enctype="multipart/form-data">
+                    <div th:replace="component :: input-hidden('id', *{id})"></div>
+                    <div class="row">
+                        <div class="col-6 mt-3"
+                             th:insert="component :: input-text-v3(#{name}, 'name', *{name}, 0, 255, true, false, false)"></div>
+                        <div class="col-6 mt-3"
+                             th:insert="component :: input-text-v3(#{nameHT}, 'nameHT', *{nameHT}, 0, 255, true, false, false)"></div>
+                        <div class="col-6 mt-3" th:with="options=${@thymeleaf.arrays('1', 'Active', '0', 'Inactive')}">
+                            <div th:replace="component :: select-default-v2(#{status}, 'status', *{status == null ? 1 : status}, false, false, ${options})"></div>
+                        </div>
+                        <div class="col-6 mt-3" th:insert="component :: select2-v2('GET', #{serviceCategory}, 'serviceCategoryId', *{serviceCategoryId}, '/selfcare/service-category/ajax-search-no-child', 'Choose service category', *{serviceCategory?.name}, false, false, 0, null)"></div>
+                        <div class="col-6 mt-3"
+                             th:insert="component :: textarea-v1(#{shortDes}, 'shortDes', *{shortDes}, 4, 0, 1024, false, false)"></div>
+                        <div class="col-6 mt-3"
+                             th:insert="component :: textarea-v1(#{shortDesHT}, 'shortDesHT', *{shortDesHT}, 4, 0, 1024, false, false)"></div>
+                        <div class="col-6 mt-3"
+                             th:insert="component :: summernote(#{description}, 'description', *{description}, 200, 0, 1024, false, false)"></div>
+                        <div class="col-6 mt-3"
+                             th:insert="component :: summernote(#{descriptionHT}, 'descriptionHT', *{descriptionHT}, 200, 0, 1024, false, false)"></div>
+                        <div class="col-6 mt-3">
+                            <div style="max-width: 440px;"
+                                 th:insert="component :: crop-image('thumbUpload11', #{thumb11}, *{thumb11}, 150, 330, 330, 330, 330, false)"></div>
+                        </div>
+                        <div class="col-6 mt-3">
+                            <div style="max-width: 440px;"
+                                 th:insert="component :: crop-image('thumbUpload169', #{thumb169}, *{thumb169}, 150, 640, 360, 640, 360, false)"></div>
+                        </div>
+                    </div>
+                    <div class="col d-flex align-items-end justify-content-center pt-3"
+                         style="padding-left: 0 !important;">
+                        <span th:with="buttonText=*{id != null} ? #{update} : #{save}">
+                            <button id="submitButton" type="submit" class="btn btn-primary" th:text="${buttonText}"
+                                    style="width: 125px; border-radius: 3px;"></button>
+                        </span>
+                        <a th:href="@{/selfcare/sc-service/index}" class="btn btn-primary ml-3"
+                           th:text="#{back}" style="width: 125px; left: 886px; top: 389px; border-radius: 3px;"></a>
+                        <a th:if="*{id != null}" id="addSubService" href="javascript:void(0)" class="btn btn-primary ml-3"
+                           th:text="'Add sub service'" style="width: 125px; left: 886px; top: 389px; border-radius: 3px;" th:attr="onclick=|addSubService('${model.id}', '')|"></a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <modal-detail th:replace="buu-component :: modal-detail-v2"></modal-detail>
+</div>
+</body>
+
+<script layout:fragment="content_page_script" th:inline="javascript">
+    $('#description').height(120);
+    $('#descriptionHT').height(120);
+
+    function addSubService(serviceId, id) {
+        if(id == null)
+            $('.modal-title').text([[#{title.create.ScSubService}]]);
+    else
+        $('.modal-title').text([[#{title.update.ScSubService}]]);
+
+        toastLoading();
+        $.ajax({
+            url: [[@{/selfcare/sc-sub-service/form-v2}]],
+        type: 'GET',
+            data: {
+            id: id,
+                serviceId: serviceId,
+                atView: "form"
+        },
+        success: (data) => {
+            Swal.close();
+            $('#body-detail-v2').html(data);
+            $('#modal-detail-v2').modal("show");
+        },
+            error: (err) => {
+            console.error(err);
+            toastError("An error has occurred!")
+        }
+    });
+    }
+</script>
+</html>

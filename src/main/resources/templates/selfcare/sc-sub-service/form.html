@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{cms_layout_1.html}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body id="page-top">
+<div class="content" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form th:fragment="scSubServiceForm" id="form" th:action="@{/selfcare/sc-sub-service/form}" class="create-role" method="post"
+                      th:object="${modelS}" enctype="multipart/form-data">
+                    <div th:replace="component :: input-hidden('atView', *{atView})"></div>
+                    <div th:replace="component :: input-hidden('id', *{id})"></div>
+                    <div th:replace="component :: input-hidden('serviceId', *{serviceId})"></div>
+                    <div class="row">
+                        <div class="col-6 mt-3"
+                             th:insert="component :: input-text-v3(#{name}, 'name', *{name}, 0, 255, true, false, false)"></div>
+                        <div class="col-6 mt-3"
+                             th:insert="component :: input-text-v3(#{code}, 'code', *{code}, 0, 255, true, false, false)"></div>
+                        <div class="col-6 mt-3"
+                             th:insert="component :: input-number-v2(#{price}, 'price', *{price}, 1, 1, 100000000, true, false)"></div>
+                        <div class="col-6 mt-3" th:with="options=${@thymeleaf.arrays('1', 'Active', '0', 'Inactive')}">
+                            <div th:replace="component :: select-default-v2(#{status}, 'status', *{status == null ? 1 : status}, false, false, ${options})"></div>
+                        </div>
+<!--                        <div class="col-6 mt-3" th:insert="component :: select2-v2('GET', #{serviceId}, 'serviceId', *{serviceId}, '/selfcare/sc-service/ajax-search', 'Choose service', ${selfcareService?.name}, false, false, 0, null)"></div>-->
+                        <div class="col-6 mt-3"
+                             th:insert="component :: textarea-v1(#{description}, 'description', *{description}, 4, 0, 1024, false, false)"></div>
+                        <div class="col-6 mt-3" th:insert="component :: select2-v2('GET', #{dkSoapTkg}, 'dkSoapTkg', *{dkSoapTkg}, '/selfcare/soap-ws/ajax-search', 'Choose service', *{dkSoapTkgWS?.name}, false, false, 0, null)"></div>
+                        <div class="col-6 mt-3" th:insert="component :: select2-v2('GET', #{dkSoapVi}, 'dkSoapVi', *{dkSoapVi}, '/selfcare/soap-ws/ajax-search', 'Choose service', *{dkSoapViWS?.name}, false, false, 0, null)"></div>
+                        <div class="col-6 mt-3" th:insert="component :: select2-v2('GET', #{cancelSoap}, 'cancelSoap', *{cancelSoap}, '/selfcare/soap-ws/ajax-search', 'Choose service', *{cancelSoapWS?.name}, false, false, 0, null)"></div>
+                        <div class="col-6 mt-3" th:insert="component :: check-box(#{allowPrepaid}, 'allowPrepaid', *{allowPrepaid == null ? 1 : allowPrepaid}, 1, 0)"></div>
+                        <div class="col-6 mt-3" th:insert="component :: check-box(#{allowPostpaid}, 'allowPostpaid', *{allowPostpaid == null ? 1 : allowPostpaid}, 1, 0)"></div>
+                        <div class="col-4 mt-3" th:insert="component :: check-box(#{allow3gsim}, 'allow3gsim', *{allow3gsim == null ? 1 : allow3gsim}, 1, 0)"></div>
+                        <div class="col-4 mt-3" th:insert="component :: check-box(#{allow4gsim}, 'allow4gsim', *{allow4gsim == null ? 1 : allow4gsim}, 1, 0)"></div>
+                        <div class="col-4 mt-3" th:insert="component :: check-box(#{allow5gsim}, 'allow5gsim', *{allow5gsim == null ? 1 : allow5gsim}, 1, 0)"></div>
+                        <div class="col-6 mt-3" th:insert="component :: check-box(#{isGift}, 'isGift', *{isGift == null ? 1 : isGift}, 0, 0)"></div>
+                        <div class="col-6 mt-3" th:insert="component :: check-box(#{isAutoRenew}, 'isAutoRenew', *{isAutoRenew == null ? 0 : isAutoRenew}, 1, 0)"></div>
+                    </div>
+                    <div class="col d-flex align-items-end justify-content-center pt-3"
+                         style="padding-left: 0 !important;">
+            <span th:with="buttonText=*{id != null} ? #{update} : #{save}">
+                <button id="submitButton" type="submit" class="btn btn-primary" th:text="${buttonText}"
+                        style="width: 125px; border-radius: 3px;"></button>
+            </span>
+<!--                        <a th:href="@{/selfcare/sc-sub-service/index}" class="btn btn-primary me-md-2 ml-3"-->
+<!--                           th:text="#{back}" style="width: 125px; left: 886px; top: 389px; border-radius: 3px;"></a>-->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script layout:fragment="content_page_script" th:inline="javascript">
+</script>
+</html>

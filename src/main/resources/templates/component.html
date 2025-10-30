@@ -1,0 +1,1855 @@
+<hieutm  xmlns:th="http://www.thymeleaf.org">
+    <div th:fragment="input-text(label, name, value, minlength, maxlength, required, disabled)">
+        <label th:for="${name}"><span>[[${label}]] <span th:if="${required}" style="color: red;">*</span></span></label>
+        <input type="text" th:id="${name}" th:name="${name}" th:value="${value}" th:disabled="${disabled}"
+               class="form-control" th:required="${required}" style="height: 31px" th:minlength="${minlength}" th:maxlength="${maxlength}">
+        <script th:inline="javascript">
+            $('#' + [[${name}]]).on('blur', function() {
+                $(this).val($(this).val().trim());
+            });
+        </script>
+    </div>
+
+    <div th:fragment="input-text-v2(label, name, value, minlength, maxlength, required, disabled, pattern)">
+        <label th:for="${name}"><span>[[${label}]] <span th:if="${required}" style="color: red;">*</span></span></label>
+        <input type="text" th:id="${name}" th:name="${name}" th:value="${value}" th:disabled="${disabled}" th:pattern="${pattern}"
+               class="form-control" th:required="${required}" style="height: 31px" th:minlength="${minlength}" th:maxlength="${maxlength}">
+        <script th:inline="javascript">
+            $('#' + [[${name}]]).on('blur', function() {
+                $(this).val($(this).val().trim());
+            });
+        </script>
+    </div>
+
+    <div th:fragment="input-date(label, name, value, min, max, required, disabled)">
+        <label th:for="${name}"><span>[[${label}]] <span th:if="${required}" style="color: red;">*</span></span></label>
+        <input type="date" th:id="${name}" th:name="${name}" th:value="${value}" th:disabled="${disabled}"
+               class="form-control" th:required="${required}" style="height: 31px" th:min="${min}" th:max="${max}">
+    </div>
+
+    <div th:fragment="input-text-v3(label, name, value, minlength, maxlength, required, disabled, readonly)">
+        <label th:for="${name}"><span>[[${label}]] <span th:if="${required}" style="color: red;">*</span></span></label>
+        <input type="text" th:id="${name}" th:name="${name}" th:value="${value}" th:disabled="${disabled}" th:readonly="${readonly}"
+               class="form-control" th:required="${required}" style="height: 31px" th:minlength="${minlength}" th:maxlength="${maxlength}">
+        <script th:inline="javascript">
+            $('#' + [[${name}]]).on('blur', function() {
+                $(this).val($(this).val().trim());
+            });
+        </script>
+    </div>
+
+    <div th:fragment="input-text-v4(label, id, name, value, minlength, maxlength, required, disabled, readonly)">
+        <label th:for="${id}"><span>[[${label}]] <span th:if="${required}" style="color: red;">*</span></span></label>
+        <input type="text" th:id="${id}" th:name="${name}" th:value="${value}" th:disabled="${disabled}" th:readonly="${readonly}"
+               class="form-control" th:required="${required}" style="height: 31px" th:minlength="${minlength}" th:maxlength="${maxlength}">
+        <script th:inline="javascript">
+            $('#' + [[${name}]]).on('blur', function() {
+                $(this).val($(this).val().trim());
+            });
+        </script>
+    </div>
+
+    <div th:fragment="input-number(label, name, value, minlength, maxlength, required, disabled)">
+        <label th:for="${name}">
+            <span>[[${label}]]
+                <span th:if="${required}" style="color: red;">*</span>
+            </span>
+        </label>
+        <input type="number" th:id="${name}" th:name="${name}" th:value="${value}" th:disabled="${disabled}"
+               class="form-control" th:required="${required}" style="height: 31px" th:min="${minlength}" th:max="${maxlength}">
+    </div>
+
+    <div th:fragment="input-number-v2(label, name, value, step, minlength, maxlength, required, disabled)">
+        <label th:for="${name}">
+            <span>[[${label}]]
+                <span th:if="${required}" style="color: red;">*</span>
+            </span>
+        </label>
+        <input type="number" th:id="${name}" th:name="${name}" th:value="${value}" th:disabled="${disabled}" th:step="${step}"
+               class="form-control" th:required="${required}" style="height: 31px" th:min="${minlength}" th:max="${maxlength}">
+    </div>
+
+    <div th:fragment="input-text-date(label, name, value, minlength, maxlength, required, disabled)">
+        <label th:for="${name}"><span>[[${label}]] <span th:if="${required}" style="color: red;">*</span></span></label>
+        <input type="text" th:id="${name}" th:name="${name}" th:value="${#dates.format(value, 'yyyy-MM-dd HH:mm:ss')}" th:disabled="${disabled}"
+               class="form-control" th:required="${required}" style="height: 31px" th:minlength="${minlength}" th:maxlength="${maxlength}">
+    </div>
+
+    <input th:fragment="input-hidden(name, value)" type="hidden" th:id="${name}" th:name="${name}" th:value="${value}">
+    <input th:fragment="input-hidden-v2(id, name, value)" type="hidden" th:id="${id}" th:name="${name}" th:value="${value}">
+
+    <div th:fragment="textarea-v1(label, name, value, rows, minlength, maxlength, required, disabled)">
+        <label th:for="${name}"><span>[[${label}]] <span th:if="${required}" style="color: red;">*</span></span></label>
+        <textarea type="text" th:rows="${rows}" th:id="${name}" th:name="${name}" th:value="${value}" th:text="${value}" th:disabled="${disabled}"
+                  class="form-control" style="height: 31px" th:required="${required}" th:minlength="${minlength}" th:maxlength="${maxlength}">
+        </textarea>
+        <script th:inline="javascript">
+            $('#' + [[${name}]]).on('blur', function() {
+                $(this).val($(this).val().trim());
+            });
+        </script>
+    </div>
+
+    <div th:fragment="summernote(label, name, value, height, minlength, maxlength, required, disabled)">
+        <label th:for="${name}"><span>[[${label}]] <span th:if="${required}" style="color: red;">*</span></span></label>
+        <textarea type="text" th:id="${name}" th:name="${name}" th:value="${value}" th:text="${value}" th:disabled="${disabled}"
+                  class="form-control" th:required="${required}" th:minlength="${minlength}" th:maxlength="${maxlength}">
+        </textarea>
+        <script th:inline="javascript">
+            $(document).ready(function () {
+                $('#' + [[${name}]]).summernote({
+                    height: [[${height}]],
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'italic', 'underline', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['fontsize', ['fontsize']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['view', ['fullscreen', 'codeview', 'help']]
+                    ]
+                });
+            });
+        </script>
+    </div>
+
+    <div th:fragment="select-default(label, name, value, options, required, disabled)">
+        <label th:for="${name}">
+            <span th:text="${label}"></span>
+            <span th:if="${required}" style="color: red;">*</span>
+        </label>
+        <select th:id="${name}" th:name="${name}" th:required="${required}" th:disabled="${disabled}" class="form-control" style="height: 31px; padding-top: 3px;">
+            <option th:each="option : ${options}" th:value="${option.value}" th:selected="${option.value == value}" th:text="${option.text}"></option>
+        </select>
+    </div>
+
+    <div th:fragment="select-default-v2(label, name, value, required, disabled, options)">
+        <label th:for="${name}">
+            <span th:text="${label}"></span>
+            <span th:if="${required}" style="color: red;">*</span>
+        </label>
+        <select th:id="${name}" th:name="${name}" th:required="${required}" th:disabled="${disabled}" class="form-control" style="height: 31px; padding-top: 3px;">
+        </select>
+        <script th:inline="javascript">
+            $(document).ready(function(){
+                let array = [[${options}]];
+
+                for (let i = 0; i < array.length; i+=2) {
+                    if (i % 2 === 0) { // Even index - value of the option
+                        let value = array[i];
+                        let text = array[i + 1]; // The text is the next item in the array
+                        $('#' + [[${name}]]).append(new Option(text, value));
+                        if(i == 0)
+                            $('#' + [[${name}]]).val(value);
+                    }
+                }
+
+                $('#' + [[${name}]]).val([[${value}]]);
+            });
+        </script>
+    </div>
+
+    <div th:fragment="check-box(label, name, value, checkedVal, uncheckedVal)">
+        <label th:for="${name + 'check-box'}" th:text="${label}"></label>
+        <div class="custom-control custom-checkbox">
+            <input class="custom-control-input custom-control-input-info" type="checkbox" th:name="${name + 'check-box'}" th:id="${name + 'check-box'}">
+            <input type="hidden" th:id="${name}" th:name="${name}">
+            <label class="custom-control-label font-weight-normal" th:for="${name + 'check-box'}"></label>
+        </div>
+        <script th:inline="javascript">
+            $(document).ready(function(){
+                if([[${value}]] == [[${checkedVal}]])
+                    $('#' + [[${name}]] + 'check-box').prop('checked', true);
+
+                $('#' + [[${name}]]).val([[${value}]]);
+
+                if ($('#' + [[${name}]] + 'check-box').is(':checked'))
+                    $('#' + [[${name}]]).val([[${checkedVal}]]);
+                else
+                    $('#' + [[${name}]]).val([[${uncheckedVal}]]);
+
+                $(document).on('change', '#' + [[${name}]] + 'check-box', function () {
+                    if ($('#' + [[${name}]] + 'check-box').is(':checked'))
+                        $('#' + [[${name}]]).val([[${checkedVal}]]);
+                    else
+                        $('#' + [[${name}]]).val([[${uncheckedVal}]]);
+                });
+            });
+        </script>
+    </div>
+
+    <div th:fragment="check-box-v2(label, id, name, value, checkedVal, uncheckedVal)">
+        <label th:for="${id + 'check-box'}" th:text="${label}"></label>
+        <div class="custom-control custom-checkbox">
+            <input class="custom-control-input custom-control-input-info" type="checkbox" th:name="${name + 'check-box'}" th:id="${id + 'check-box'}">
+            <input type="hidden" th:id="${id}" th:name="${name}">
+            <label class="custom-control-label font-weight-normal" th:for="${id + 'check-box'}"></label>
+        </div>
+        <script th:inline="javascript">
+            $(document).ready(function(){
+                if([[${value}]] == [[${checkedVal}]])
+                    $('#' + [[${id}]] + 'check-box').prop('checked', true);
+
+                $('#' + [[${id}]]).val([[${value}]]);
+
+                if ($('#' + [[${id}]] + 'check-box').is(':checked'))
+                    $('#' + [[${id}]]).val([[${checkedVal}]]);
+                else
+                    $('#' + [[${id}]]).val([[${uncheckedVal}]]);
+
+                $(document).on('change', '#' + [[${id}]] + 'check-box', function () {
+                    if ($('#' + [[${id}]] + 'check-box').is(':checked'))
+                        $('#' + [[${id}]]).val([[${checkedVal}]]);
+                    else
+                        $('#' + [[${id}]]).val([[${uncheckedVal}]]);
+                });
+            });
+        </script>
+    </div>
+
+    <div th:fragment="radio(label, name, value, options, required)">
+        <div th:id="${name}">
+            <p class="mb-1 font-weight-bold">
+                <span th:text="${label}"></span>
+                <span th:if="${required}" style="color: red;">*</span>
+            </p>
+        </div>
+        <script th:inline="javascript">
+            $(document).ready(function(){
+                let array = [[${options}]];
+
+                for (let i = 0; i < array.length; i+=2) {
+                    let id = [[${name}]] + i;
+                    let name = [[${name}]];
+                    let value = array[i];
+                    let text = array[i + 1];
+
+                    let newHtml = `
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="${id}" name="${name}" value="${value}" class="custom-control-input custom-control-input-info" ${[[${required}]] ? 'required' : ''}>
+                            <label style="line-height: 1.5rem;" class="custom-control-label font-weight-normal" for="${id}">${text}</label>
+                        </div>
+                    `;
+
+                    $('#' + name).append(newHtml);
+
+                    if(value == [[${value}]])
+                        $('#' + id).prop('checked', true);
+                }
+            });
+        </script>
+    </div>
+
+    <div th:fragment="input-file(label, name, value, accept, required, disabled)">
+        <label style="font-weight: bold"><span>[[${label}]] <span th:if="${required}" style="color: red;">*</span></span></label>
+        <div class="custom-file">
+            <input type="file" th:id="${name} + 'Upload'" th:name="${name} + 'Upload'" class="custom-file-input" th:accept="${accept}" th:disabled="${disabled}" th:required="${required}">
+            <input type="text" hidden th:id="${name}" th:name="${name}" th:value="${value}">
+            <label th:id="${name} + 'UploadfileNameDisplay'" class="custom-file-label" th:for="${name} + 'Upload'" style="height: 31px">Choose file</label>
+        </div>
+        <script th:inline="javascript">
+            $(document).ready(function() {
+                let name = [[${name}]] + 'Upload';
+                let inputElement = $('#' + name);
+                let fileNameDisplay = $('#' + name + 'fileNameDisplay');
+
+                inputElement.on('change', function() {
+                    let files = this.files;
+                    let fileName = files.length > 0 ? files[0].name : 'Choose file';
+                    console.log(files.length > 0 ? 'Người dùng đã chọn file' : 'Người dùng đã nhấn Cancel');
+                    fileNameDisplay.text(fileName);
+                });
+            });
+        </script>
+    </div>
+
+    <div th:fragment="input-file-v2(label, id, name, value, accept, required, disabled)">
+        <label style="font-weight: bold"><span>[[${label}]] <span th:if="${required}" style="color: red;">*</span></span></label>
+        <div class="custom-file">
+            <input type="file" th:id="${id} + 'Upload'" th:name="${name} + 'Upload'" class="custom-file-input" th:accept="${accept}" th:disabled="${disabled}" th:required="${required}">
+            <input type="text" hidden th:id="${id}" th:name="${name}" th:value="${value}">
+            <label th:id="${id} + 'UploadfileNameDisplay'" class="custom-file-label" th:for="${id} + 'Upload'" style="height: 31px">Choose file</label>
+        </div>
+        <script th:inline="javascript">
+            $(document).ready(function() {
+                let name = [[${id}]] + 'Upload';
+                let inputElement = $('#' + name);
+                let fileNameDisplay = $('#' + name + 'fileNameDisplay');
+
+                inputElement.on('change', function() {
+                    let files = this.files;
+                    let fileName = files.length > 0 ? files[0].name : 'Choose file';
+                    console.log(files.length > 0 ? 'Người dùng đã chọn file' : 'Người dùng đã nhấn Cancel');
+                    fileNameDisplay.text(fileName);
+                });
+            });
+        </script>
+    </div>
+
+    <div th:fragment="select2(method, label, name, value, url, title, text, required, disabled)">
+        <label th:for="${name}"><span>[[${label}]] <span th:if="${required}" style="color: red;">*</span></span></label>
+        <select th:id="${name}" th:name="${name}" class="form-control" th:required="${required}" th:disabled="${disabled}" style="width: 100%">
+            <option th:value="${value}" th:text="${text}"></option>
+        </select>
+        <script th:inline="javascript">
+            $('#' + [[${name}]]).select2({
+                ajax: {
+                    type: [[${method}]],
+                    url: [[${@environment.getProperty('server.servlet.context-path') + url}]],
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            input: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: [[${title}]],
+                minimumInputLength: 1,
+                allowClear: true
+            });
+        </script>
+    </div>
+
+    <div th:fragment="select2-v2(method, label, name, value, url, title, text, required, disabled, minimumInputLength, additionalParams)">
+        <label th:for="${name}"><span>[[${label}]] <span th:if="${required}" style="color: red;">*</span></span></label>
+        <select th:id="${name}" th:name="${name}" class="form-control" th:required="${required}" th:disabled="${disabled}" style="width: 100%">
+            <option th:value="${value}" th:text="${text}"></option>
+        </select>
+        <script th:inline="javascript">
+            $('#' + [[${name}]]).select2({
+                ajax: {
+                    type: [[${method}]],
+                    url: [[${@environment.getProperty('server.servlet.context-path') + url}]],
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        let query = {
+                            input: params.term
+                        }
+                        let additionalParams = [[${additionalParams}]];
+                        console.log(additionalParams);
+                        if(additionalParams != null) {
+                            additionalParams.forEach(param => {
+                                query[param.value] = param.text;
+                            });
+                        }
+                        return query;
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: [[${title}]],
+                minimumInputLength: [[${minimumInputLength}]],
+                allowClear: true
+            });
+        </script>
+    </div>
+
+    <div th:fragment="select2-icon(method, label, name, value, url, title, text, required, disabled, minimumInputLength, additionalParams, redirectUrl)">
+        <label th:for="${name}"><span>[[${label}]] <span th:if="${required}" style="color: red;">*</span></span></label>
+        <select th:id="${name}" th:name="${name}" class="form-control" th:required="${required}" th:disabled="${disabled}" style="width: 100%">
+            <option th:value="${value}" th:text="${text}"></option>
+        </select>
+        <script th:inline="javascript">
+            $('#' + [[${name}]]).select2({
+                ajax: {
+                    type: [[${method}]],
+                    url: [[${@environment.getProperty('server.servlet.context-path') + url}]],
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        let query = {
+                            input: params.term
+                        }
+                        let additionalParams = [[${additionalParams}]];
+                        console.log(additionalParams);
+                        if(additionalParams != null) {
+                            additionalParams.forEach(param => {
+                                query[param.value] = param.text;
+                            });
+                        }
+                        return query;
+                    },
+                    processResults: function(data) {
+                        data.unshift({id: 'create', text: [[#{create}]], redirectUrl: [[${redirectUrl}]]})
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: [[${title}]],
+                minimumInputLength: [[${minimumInputLength}]],
+                allowClear: true,
+                templateResult: function(data) {
+                    if (!data.id) {
+                        return data.text;
+                    }
+                    if (data.id === 'create') {
+                        var $result = $(
+                            '<span><i class="fa fa-plus-circle"></i>  ' + data.text + '</span>'
+                        );
+                        return $result;
+                    }
+                    return data.text;
+                },
+                templateSelection: function(data) {
+                    return data.text;
+                }
+            });
+        </script>
+    </div>
+
+    <div th:fragment="select2-v3(method, label, name, value, url, title, text, required, disabled, readonly, minimumInputLength, additionalParams)">
+        <label th:for="${name}"><span>[[${label}]] <span th:if="${required}" style="color: red;">*</span></span></label>
+        <select th:id="${name}" th:name="${name}" class="form-control" th:required="${required}" th:disabled="${disabled}" th:readonly="${readonly}" style="width: 100%">
+            <option th:value="${value}" th:text="${text}"></option>
+        </select>
+        <script th:inline="javascript">
+            $('#' + [[${name}]]).select2({
+                ajax: {
+                    type: [[${method}]],
+                    url: [[${@environment.getProperty('server.servlet.context-path') + url}]],
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        let query = {
+                            input: params.term
+                        }
+                        let additionalParams = [[${additionalParams}]];
+                        console.log(additionalParams);
+                        if(additionalParams != null) {
+                            additionalParams.forEach(param => {
+                                query[param.value] = param.text;
+                            });
+                        }
+                        return query;
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: [[${title}]],
+                minimumInputLength: [[${minimumInputLength}]],
+                allowClear: true
+            });
+        </script>
+    </div>
+
+    <div th:fragment="select2-multiple(method, label, name, options, url, title, required, disabled, tags, minimumInputLength, additionalParams)">
+        <label th:for="${name}"><span>[[${label}]] <span th:if="${required}" style="color: red;">*</span></span></label>
+        <select th:id="${name}" th:name="${name}" class="form-control" th:required="${required}" th:disabled="${disabled}" multiple style="width: 100%">
+            <option th:each="option : ${options}" th:text="${option.text}" th:value="${option.value}"></option>
+        </select>
+        <script th:inline="javascript">
+            $('#' + [[${name}]]).select2({
+                ajax: {
+                    type: [[${method}]],
+                    url: [[${@environment.getProperty('server.servlet.context-path') + url}]],
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        let query = {
+                            input: params.term
+                        }
+                        let additionalParams = [[${additionalParams}]];
+                        console.log(additionalParams);
+                        if(additionalParams != null) {
+                            additionalParams.forEach(param => {
+                                query[param.value] = param.text;
+                            });
+                        }
+                        return query;
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: [[${title}]],
+                minimumInputLength: [[${minimumInputLength}]],
+                allowClear: true,
+                tags: [[${tags}]]
+            }).val((function(selectId) {
+                let selectElement = document.getElementById(selectId); // Lấy tham chiếu đến phần tử <select>
+                let selectedValues = []; // Khởi tạo một mảng để lưu trữ các giá trị đã chọn
+                for (let i = 0; i < selectElement.options.length; i++) {
+                    let option = selectElement.options[i]; // Lấy ra từng tùy chọn
+                    selectedValues.push(option.value); // Thêm giá trị của tùy chọn vào mảng
+                }
+                return selectedValues;
+            })([[${name}]]))
+                .trigger('change');
+        </script>
+    </div>
+
+    <div th:fragment="select2-multiple-search-for(method, label, name, options, url, title, required, disabled, minimumInputLength, idNeedSearch, additionalParams)">
+        <label th:for="${name}"><span>[[${label}]] <span th:if="${required}" style="color: red;">*</span></span></label>
+        <select th:id="${name}" th:name="${name}" class="form-control" th:required="${required}" th:disabled="${disabled}" multiple style="width: 100%">
+            <option th:each="option : ${options}" th:text="${option.text}" th:value="${option.value}"></option>
+        </select>
+        <script th:inline="javascript">
+            $('#' + [[${name}]]).select2({
+                ajax: {
+                    type: [[${method}]],
+                    url: [[${@environment.getProperty('server.servlet.context-path') + url}]],
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        let query = {
+                            input: params.term
+                        }
+
+                        let idNeedSearch = [[${idNeedSearch}]];
+                        idNeedSearch.forEach((item) => {
+                            console.log(item, $(`#${item}`).val());
+                            query[item] = $(`#${item}`).val();
+                        });
+
+                        let additionalParams = [[${additionalParams}]];
+                        console.log(additionalParams);
+                        if(additionalParams != null) {
+                            additionalParams.forEach(param => {
+                                query[param.value] = param.text;
+                            });
+                        }
+                        return query;
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: [[${title}]],
+                minimumInputLength: [[${minimumInputLength}]],
+                allowClear: true
+            }).val((function(selectId) {
+                let selectElement = document.getElementById(selectId); // Lấy tham chiếu đến phần tử <select>
+                let selectedValues = []; // Khởi tạo một mảng để lưu trữ các giá trị đã chọn
+                for (let i = 0; i < selectElement.options.length; i++) {
+                    let option = selectElement.options[i]; // Lấy ra từng tùy chọn
+                    selectedValues.push(option.value); // Thêm giá trị của tùy chọn vào mảng
+                }
+                return selectedValues;
+            })([[${name}]]))
+                .trigger('change');
+        </script>
+    </div>
+
+    <div th:fragment="select2-tag-number-multiple(label, name, options, title, required, disabled)">
+        <label th:for="${name}"><span>[[${label}]] <span th:if="${required}" style="color: red;">*</span></span></label>
+        <select th:id="${name}" th:name="${name}" class="form-control" th:required="${required}" th:disabled="${disabled}" multiple style="width: 100%">
+            <option th:each="option : ${options}" th:text="${option.text}" th:value="${option.value}"></option>
+        </select>
+        <script th:inline="javascript">
+            $('#' + [[${name}]]).select2({
+                tags: true,
+                placeholder: [[${title}]],
+                minimumInputLength: 1,
+                allowClear: true,
+                createTag: function(params) {
+                    let term = $.trim(params.term);
+                    if (term === '') {
+                        return null;
+                    }
+
+                    if (!/^[\d+]+$/.test(term)) {
+                        return null;
+                    }
+
+                    return {
+                        id: term,
+                        text: term
+                    };
+                }
+            }).on('select2:open', function() {
+                let searchField = $('.select2-container--open .select2-search__field');
+                searchField.on('input', function() {
+                    let value = $(this).val();
+                    $(this).val(value.replace(/[^\d+]/g, '')); // Replace non-numeric characters
+                });
+            }).val((function(selectId) {
+                let selectElement = document.getElementById(selectId); // Lấy tham chiếu đến phần tử <select>
+                let selectedValues = []; // Khởi tạo một mảng để lưu trữ các giá trị đã chọn
+                for (let i = 0; i < selectElement.options.length; i++) {
+                    let option = selectElement.options[i]; // Lấy ra từng tùy chọn
+                    selectedValues.push(option.value); // Thêm giá trị của tùy chọn vào mảng
+                }
+                return selectedValues;
+            })([[${name}]]))
+                .trigger('change');
+        </script>
+    </div>
+
+    <div th:fragment="select2-tag-number(label, name, value, title, text, required, disabled)">
+        <label th:for="${name}"><span>[[${label}]] <span th:if="${required}" style="color: red;">*</span></span></label>
+        <select th:id="${name}" th:name="${name}" class="form-control" th:required="${required}" th:disabled="${disabled}" style="width: 100%">
+            <option th:text="${text}" th:value="${value}"></option>
+        </select>
+        <script th:inline="javascript">
+            $('#' + [[${name}]]).select2({
+                tags: true,
+                placeholder: [[${title}]],
+                minimumInputLength: 1,
+                allowClear: true,
+                createTag: function(params) {
+                    let term = $.trim(params.term);
+                    if (term === '') {
+                        return null;
+                    }
+
+                    if (!/^[\d+]+$/.test(term)) {
+                        return null;
+                    }
+
+                    return {
+                        id: term,
+                        text: term
+                    };
+                }
+            }).on('select2:open', function() {
+                let searchField = $('.select2-container--open .select2-search__field');
+                searchField.on('input', function() {
+                    let value = $(this).val();
+                    $(this).val(value.replace(/[^\d+]/g, '')); // Replace non-numeric characters
+                });
+            });
+        </script>
+    </div>
+
+    <div th:fragment="input-date-ranger(label, name, value, required, disabled, format, start, end)">
+        <label th:for="${name}"><span>[[${label}]] <span th:if="${required}" style="color: red;">*</span></span></label>
+        <input type="text" th:id="${name}" th:name="${name}" th:value="${value}" th:disabled="${disabled}"
+               class="form-control" th:required="${required}" style="height: 31px">
+        <script th:inline="javascript">
+            $('#' + [[${name}]]).on('focus', function() {
+                let currentDate = moment().subtract([[${end}]], 'days');
+                let defaultDate = moment().subtract([[${start}]], 'days');
+                $(this).daterangepicker({
+                    "locale": {
+                        "format": [[${format}]]
+                    },
+                    "startDate": defaultDate,
+                    "endDate": currentDate,
+                    "maxDate": currentDate
+                });
+            });
+        </script>
+    </div>
+
+    <div th:fragment="input-date-ranger-v2(label, name, value, required, disabled, format, start, end)">
+        <label th:for="${name}"><span>[[${label}]] <span th:if="${required}" style="color: red;">*</span></span></label>
+        <input type="text" th:id="${name}" th:name="${name}" th:value="${value}" th:disabled="${disabled}"
+               class="form-control" th:required="${required}" style="height: 31px">
+        <script th:inline="javascript">
+            $('#' + [[${name}]]).on('focus', function() {
+                $(this).daterangepicker({
+                    "locale": {
+                        "format": [[${format}]]
+                    }
+                });
+            });
+        </script>
+    </div>
+
+    <div class="container-fluid" th:fragment="info-box(label, value, icon)">
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="row" style="justify-content: center;">
+                    <span th:utext="${icon}"></span>
+                    <span class="ml-2" th:text="${label}"></span>
+                </div>
+                <div class="row" style="justify-content: center" th:text="${value}"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid" th:fragment="info-box-v2(label, value, icon, valueCss)">
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="row" style="justify-content: center;">
+                    <span th:utext="${icon}"></span>
+                    <span class="ml-2" th:text="${label}"></span>
+                </div>
+                <div class="row" th:style="${valueCss}" th:text="${value}"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid" th:fragment="info-box-v3(label, value, icon, valueCss, cardBodyCss)">
+        <div class="card card-default">
+            <div class="card-body" th:style="${cardBodyCss}">
+                <div class="row" style="justify-content: center;">
+                    <span th:utext="${icon}"></span>
+                    <span class="ml-2" th:text="${label}"></span>
+                </div>
+                <div class="row" th:style="${valueCss}" th:text="${value}"></div>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:fragment="input-movie-sub-file(id, name, chooseFileText)">
+        <div class="custom-file">
+            <input type="file" th:id="${id}" th:name="${name}" class="custom-file-input" accept=".srt,.vtt">
+            <label class="custom-file-label" th:for="${id}" th:text="${chooseFileText}"></label>
+        </div>
+        <script th:inline="javascript">
+            $(document).ready(function () {
+                $(`#` + [[${id}]]).on("change", function () {
+                    let file = this.files[0];
+                    if (file) {
+                        let fileName = file.name.toLowerCase();
+                        let validExtensions = [".srt", ".vtt"];
+
+                        if (!validExtensions.some(ext => fileName.endsWith(ext))) {
+                            toastError("Only files with .srt or .vtt format are accepted!");
+                            $(this).val(""); // Xóa file đã chọn
+                            $(this).next(".custom-file-label").text([[${chooseFileText}]]);
+                        } else {
+                            // Cập nhật label với tên file hợp lệ
+                            $(this).next(".custom-file-label").text(file.name);
+                        }
+                    }
+                });
+            });
+        </script>
+    </th:block>
+
+    <div th:fragment="input-enable(label, name, value, disabled, turn)">
+        <div class="buu">
+            <div class="custom-control custom-switch custom-buu-label-top">
+                <input th:id="${name} + 'Check'" th:value="${value}" th:name="${name} + 'Check'" th:disabled="${disabled}" th:checked="${turn}" type="checkbox" class="custom-control-input custom-control-input-info">
+                <input hidden="hidden" th:id="${name}" th:value="${value}" th:name="${name}" type="text">
+                <label th:id="${name + 'Btl'}" class="custom-control-label" th:for="${name} + 'Check'">[[${label}]]</label>
+            </div>
+            <script th:inline="javascript">
+                if([[${value}]] == 0) {
+                    $(`#` + [[${name}]] + `Check`).prop("checked", false);
+                } else if([[${value}]] == 1) {
+                    $(`#` + [[${name}]] + `Check`).prop("checked", true);
+                } else if ([[${value}]] == null) {
+                    $(`#` + [[${name}]] + `Check`).prop("checked", false);
+                    $(`#` + [[${name}]] + `Check`).val("0");
+                    $(`#` + [[${name}]]).val("0");
+                }
+                $(`#` + [[${name}]] + `Check`).on("change", (e) => {
+                    if(e.target.checked === true) {
+                        $(`#` + [[${name}]]).val("1");
+                        $(`#` + [[${name}]] + `Check`).val("1");
+                    } else {
+                        $(`#` + [[${name}]]).val("0");
+                        $(`#` + [[${name}]] + `Check`).val("0");
+                    }
+                })
+            </script>
+        </div>
+    </div>
+
+    <th:block th:fragment="crop-image(id, label, image, height, x, y, minW, minH, required)">
+        <div th:id="${id}">
+            <div class="form-group h-100 w-100 d-inline-block">
+                <label><span>[[${label}]]<span th:if="${required}" style="color: red;"> *</span></span></label>
+                <div class="buu_image_upload">
+                    <img th:unless="${image}" th:style="'object-fit: cover; object-position: bottom;' + 'max-height: ' + ${height} + 'px;'" th:src="@{/img/bg_login4.jpg}" class="buuPreviewImage img-fluid img-thumbnail"/>
+                    <img th:if="${image}" th:style="'object-fit: cover; object-position: bottom;' + 'max-height: ' + ${height} + 'px;'" th:src="${@thymeleaf.mediaUrl(image)}" class="buuPreviewImage img-fluid img-thumbnail"/>
+                </div>
+            </div>
+            <input type="file" class="buu_file_image" accept="image/*" hidden="hidden" style="cursor: pointer;">
+            <input type="text" class="buu_file_image_data" th:name="${id}" th:required="${required}" hidden>
+            <div class="buu-modal-crop-image modal fade">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="w-100"><h4 class="modal-title text-center">CROP IMAGE</h4></div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="img-container">
+                                <img style="width:60vw; height:65vh;" class="buu_image cropper-hidden" th:src="@{/img/vn.jpeg}">
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-center">
+                            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="buu_apply_crop_image btn btn-default">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script th:inline="javascript">
+            $(() => {
+                let id = [[${id}]];
+                $('#' + id + ' .buuPreviewImage').css('min-height', [[${height}]]);
+                // $('#' + id + ' .buuPreviewImage').css('width', '100%');
+                $('#' + id + ' .buuPreviewImage').css('display', 'block');
+                //======== BEGIN CROPPER SETUP ========
+                $('#' + id + ' .buuPreviewImage').click( function() {
+                    console.log("xxxx");
+                    $('#' + id + ' .buu_file_image').click();
+                });
+
+                let image = document.querySelector('#' + id + ' .buu_image');
+                let cropper = "";
+                let fileName = "";
+                $('#' + id + ' .buu_file_image').change(function(e) {
+                    let reader = new FileReader();
+                    console.log(e.target.files.length);
+                    if(e.target.files.length == 0)
+                        return;
+                    reader.readAsDataURL(e.target.files[0]);
+
+                    reader.onload = () => {
+                        image.setAttribute("src", reader.result);
+                        if (cropper) {
+                            cropper.destroy();
+                        }
+                        setTimeout(function() {
+                            cropper = new Cropper(image, {
+                                aspectRatio: [[${x}]] / [[${y}]],
+                                viewMode: 1,
+                            });
+                        }, 300);
+                        $('#' + id + ' .buu-modal-crop-image').modal('show');
+                    };
+                    fileName = e.target.files[0].name.split(".")[0];
+                });
+
+                $('#' + id + ' .buu-modal-crop-image').on('hide.bs.modal', function (e) {
+                    $('#' + id + ' .buu_file_image').val('');
+                });
+
+                $('#' + id + ' .buu_apply_crop_image').click(function(e) {
+                    e.preventDefault();
+                    console.log(cropper);
+                    let imgSrc = cropper.getCroppedCanvas({
+                        width: [[${x}]], // Chiều rộng cố định
+                        height: [[${y}]], // Chiều cao cố định
+                    }).toDataURL("image/jpeg", 2);
+                    console.log(imgSrc);
+
+                    $('#' + id + ' .buuPreviewImage').attr("src", imgSrc);
+                    $('#' + id + ' .buu_file_image_data').val(imgSrc);
+                    $('#' + id + ' .buu-modal-crop-image').modal('hide');
+                });
+            })
+        </script>
+    </th:block>
+
+    <th:block th:fragment="crop-image-old(id, label, image, height, x, y, minW, minH)">
+        <div th:id="${id}">
+            <div class="form-group h-100 w-100 d-inline-block">
+                <label><span>[[${label}]]<span style="color: red;"> *</span></span></label>
+                <div class="buu_image_upload">
+                    <img th:unless="${image}" th:style="'object-fit: cover; object-position: bottom;' + 'max-height: ' + ${height} + 'px;'" th:src="@{/img/bg_login4.jpg}" class="buuPreviewImage img-fluid img-thumbnail"/>
+                    <img th:if="${image}" th:src="${@environment.getProperty('cdn.domain.url')} + ${image}" class="buuPreviewImage img-fluid img-thumbnail"/>
+                </div>
+            </div>
+            <input type="file" class="buu_file_image" accept="image/*" hidden="hidden" style="cursor: pointer;">
+            <input type="text" class="buu_file_image_data" th:name="${id}" hidden>
+            <div class="buu-modal-crop-image modal fade">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="w-100"><h4 class="modal-title text-center">CROP IMAGE</h4></div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="img-container">
+                                <img style="width:60vw; height:65vh;" class="buu_image cropper-hidden" th:src="@{/img/vn.jpeg}">
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-center">
+                            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="buu_apply_crop_image btn btn-default">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script th:inline="javascript">
+            $(() => {
+                let id = [[${id}]];
+                $('#' + id + ' .buuPreviewImage').css('min-height', [[${height}]]);
+                // $('#' + id + ' .buuPreviewImage').css('width', '100%');
+                $('#' + id + ' .buuPreviewImage').css('display', 'block');
+                //======== BEGIN CROPPER SETUP ========
+                $('#' + id + ' .buuPreviewImage').click( function() {
+                    console.log("xxxx");
+                    $('#' + id + ' .buu_file_image').click();
+                });
+
+                let image = document.querySelector('#' + id + ' .buu_image');
+                let cropper = "";
+                let fileName = "";
+                $('#' + id + ' .buu_file_image').change(function(e) {
+                    let reader = new FileReader();
+                    console.log(e.target.files.length);
+                    if(e.target.files.length == 0)
+                        return;
+                    reader.readAsDataURL(e.target.files[0]);
+
+                    reader.onload = () => {
+                        image.setAttribute("src", reader.result);
+                        if (cropper) {
+                            cropper.destroy();
+                        }
+                        setTimeout(function() {
+                            cropper = new Cropper(image, {
+                                aspectRatio: [[${x}]] / [[${y}]],
+                                viewMode: 1,
+                            });
+                        }, 300);
+                        $('#' + id + ' .buu-modal-crop-image').modal('show');
+                    };
+                    fileName = e.target.files[0].name.split(".")[0];
+                });
+
+                $('#' + id + ' .buu-modal-crop-image').on('hide.bs.modal', function (e) {
+                    $('#' + id + ' .buu_file_image').val('');
+                });
+
+                $('#' + id + ' .buu_apply_crop_image').click(function(e) {
+                    e.preventDefault();
+                    console.log(cropper);
+                    let imgSrc = cropper.getCroppedCanvas({
+                        width: [[${minW}]], // Chiều rộng cố định
+                        height: [[${minH}]], // Chiều cao cố định
+                    }).toDataURL("image/png", 1);
+                    console.log(imgSrc);
+
+                    $('#' + id + ' .buuPreviewImage').attr("src", imgSrc);
+                    $('#' + id + ' .buu_file_image_data').val(imgSrc);
+                    $('#' + id + ' .buu-modal-crop-image').modal('hide');
+                });
+            })
+        </script>
+    </th:block>
+
+    <th:block th:fragment="crop-image-create(id, label, image, height, x, y, minW, minH)">
+        <div th:id="${id}">
+            <div class="form-group h-100 w-100 d-inline-block">
+                <label><span>[[${label}]]<span style="color: red;"> *</span></span></label>
+                <div class="buu_image_upload">
+                    <img th:unless="${image}" th:style="'object-fit: cover; object-position: bottom;' + 'max-height: ' + ${height} + 'px;'" th:src="@{/img/bg_login4.jpg}" class="buuPreviewImage img-fluid img-thumbnail"/>
+                    <img th:if="${image}" th:src="${@environment.getProperty('cdn.domain.url')} + ${image}" class="buuPreviewImage img-fluid img-thumbnail"/>
+                </div>
+            </div>
+            <input type="file" class="buu_file_image" accept="image/*" hidden="hidden" style="cursor: pointer;">
+            <input type="text" class="buu_file_image_data" th:name="${id}" required hidden>
+            <div class="buu-modal-crop-image modal fade">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="w-100"><h4 class="modal-title text-center">CROP IMAGE</h4></div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="img-container">
+                                <img style="width:60vw; height:65vh;" class="buu_image cropper-hidden" th:src="@{/img/vn.jpeg}">
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-center">
+                            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="buu_apply_crop_image btn btn-default">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script th:inline="javascript">
+            $(() => {
+                let id = [[${id}]];
+                $('#' + id + ' .buuPreviewImage').css('min-height', [[${height}]]);
+                // $('#' + id + ' .buuPreviewImage').css('width', '100%');
+                $('#' + id + ' .buuPreviewImage').css('display', 'block');
+                //======== BEGIN CROPPER SETUP ========
+                $('#' + id + ' .buuPreviewImage').click( function() {
+                    console.log("xxxx");
+                    $('#' + id + ' .buu_file_image').click();
+                });
+
+                let image = document.querySelector('#' + id + ' .buu_image');
+                let cropper = "";
+                let fileName = "";
+                $('#' + id + ' .buu_file_image').change(function(e) {
+                    let reader = new FileReader();
+                    console.log(e.target.files.length);
+                    if(e.target.files.length == 0)
+                        return;
+                    reader.readAsDataURL(e.target.files[0]);
+
+                    reader.onload = () => {
+                        image.setAttribute("src", reader.result);
+                        if (cropper) {
+                            cropper.destroy();
+                        }
+                        setTimeout(function() {
+                            cropper = new Cropper(image, {
+                                aspectRatio: [[${x}]] / [[${y}]],
+                                viewMode: 1,
+                            });
+                        }, 300);
+                        $('#' + id + ' .buu-modal-crop-image').modal('show');
+                    };
+                    fileName = e.target.files[0].name.split(".")[0];
+                });
+
+                $('#' + id + ' .buu-modal-crop-image').on('hide.bs.modal', function (e) {
+                    $('#' + id + ' .buu_file_image').val('');
+                });
+
+                $('#' + id + ' .buu_apply_crop_image').click(function(e) {
+                    e.preventDefault();
+                    console.log(cropper);
+                    let imgSrc = cropper.getCroppedCanvas({
+                        width: [[${minW}]], // Chiều rộng cố định
+                        height: [[${minH}]], // Chiều cao cố định
+                    }).toDataURL("image/png", 1);
+                    console.log(imgSrc);
+
+                    $('#' + id + ' .buuPreviewImage').attr("src", imgSrc);
+                    $('#' + id + ' .buu_file_image_data').val(imgSrc);
+                    $('#' + id + ' .buu-modal-crop-image').modal('hide');
+                });
+            })
+        </script>
+    </th:block>
+
+    <th:block th:fragment="display-search()">
+        <a id="minimizeButton" href="javascript:void(0)"><i class="far fa-minus-square"></i></a>
+        <a id="maximizeButton" href="javascript:void(0)"><i class="far fa-plus-square"></i></a>
+        <script>
+            $('#maximizeButton').hide();
+
+            $('#minimizeButton').click(function() {
+                $('#form-search').hide();
+                $('#maximizeButton').show();
+                $('#minimizeButton').hide();
+            });
+
+            $('#maximizeButton').click(function() {
+                $('#form-search').show();
+                $('#minimizeButton').show();
+                $('#maximizeButton').hide();
+            });
+        </script>
+    </th:block>
+
+    <td th:fragment="display-call-status(callType, callStatusCode, callStatus)">
+        <span th:if="${callType == 'callout' || callType == 'callivr'}">
+            <span th:if="${callStatusCode == 480}">Người nhận bận</span>
+            <span th:if="${callStatusCode == 487}">Người gọi đã hủy</span>
+            <span th:if="${callStatusCode == 488 && callStatus == 'Callee Cancel'}">Người nhận từ chối</span>
+            <span th:if="${callStatusCode == 488 && callStatus != 'Callee Cancel'}">Hết thời gian chờ</span>
+            <span th:if="${callStatusCode == 203}">Người nhận kết thúc</span>
+            <span th:if="${callStatusCode == 204}">Người gọi kết thúc</span>
+            <span th:if="${callStatusCode == 491}">Người nhận không hoạt động</span>
+            <span th:if="${callStatusCode == 492}">Lỗi tổng đài</span>
+            <span th:if="${callStatusCode == 496}">Chưa kích hoạt tính năng call in app</span>
+            <span th:if="${callStatusCode == 497}">Đã sử dụng hết cước gọi</span>
+            <span th:if="${callStatusCode == 498}">Người gọi đang trong cuộc gọi khác</span>
+            <span th:if="${callStatusCode == 499 && (callStatus == 'SYSTEM_IS_MAINTENANCE' || callStatus == 'Error')}">Lỗi tổng đài</span>
+            <span th:if="${callStatusCode == 499 && callStatus == 'XMPP_INVITE_TIMEOUT'}">Quá thời gian xử lý cuộc gọi</span>
+            <span th:if="${callStatusCode == 499 && callStatus == 'CALLER_INVALID'}">Tài khoản người gọi không tồn tại</span>
+            <span th:if="${callStatusCode == 499 && callStatus == 'CALLEE_INVALID'}">Số điện thoại người nhận không đúng</span>
+            <span th:if="${callStatusCode == 499 && callStatus == 'CALLER_IN_CALLING'}">Người gọi đang trong cuộc gọi khác</span>
+            <span th:if="${callStatusCode == 499 && callStatus == 'MEDIA_TIMEOUT'}">Lỗi thiết lập media không thành công</span>
+        </span>
+        <span th:if="${callType == 'callin'}">
+            <span th:if="${callStatusCode == 480}">Người nhận bận</span>
+            <span th:if="${callStatusCode == 492}">Không tồn tại người nhận</span>
+            <span th:if="${callStatusCode == 487}">Người gọi đã hủy</span>
+            <span th:if="${callStatusCode == 203}">Người nhận kết thúc</span>
+            <span th:if="${callStatusCode == 204}">Người gọi kết thúc</span>
+            <span th:if="${callStatusCode == 488}">Người nhận từ chối</span>
+            <span th:if="${callStatusCode == 606}">Hết thời gian chờ</span>
+        </span>
+        <span th:if="${callType == 'calldata'}">
+            <span th:if="${callStatusCode == 480}">Người nhận đang bận</span>
+            <span th:if="${callStatusCode == 487}">Người gọi đã hủy</span>
+            <span th:if="${callStatusCode == 488}">Người nhận từ chối</span>
+            <span th:if="${callStatusCode == 489}">Hết thời gian chờ</span>
+            <span th:if="${callStatusCode == 203}">Người nhận kết thúc</span>
+            <span th:if="${callStatusCode == 204}">Người gọi kết thúc</span>
+        </span>
+        <span th:if="${callStatus == 'answered'}">Đang trả lời</span>
+        <span th:if="${callStatus == 'ringing'}">Đang đổ chuông</span>
+        <span th:if="${callStatusCode == 600}">Không liên lạc được</span>
+    </td>
+
+    <div th:fragment="record-file-cdr(index, callType, link)">
+        <span th:id="'audio-cdr' + ${index}"></span>
+        <div class="modal fade" th:id="'view-media-modal-sm' + ${index}">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div th:id="'modal-body' + ${index}" class="modal-body">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script th:inline="javascript">
+            $(document).ready(function () {
+                if([[${link}]] != null && [[${link}]] != '') {
+                    let id = 'audio-cdr-' + [[${index}]];
+                    let mediaId = "#audio-cdr" + [[${index}]];
+                    if ([[${callType}]] == "callivr" && [[${link}]].indexOf(".mp4") !== -1) {
+                        let linkk = [[${link}]];
+                        linkk = linkk.replace('.mp4', '');
+                        $(mediaId).addClass('twoVideoFormat');
+                        $(mediaId).append("Người gọi:").append($(`<video id='${id}-caller' controls style='width: 200px; margin: 0 10px;'>`).append($("<source type='video/ogg'>").attr("src", linkk + "_caller.mp4")));
+                        $(mediaId).append("Người nhận:").append($(`<video id='${id}-callee' controls style='width: 200px; margin: 0 10px;'>`).append($("<source type='video/ogg'>").attr("src", linkk + "_callee.mp4")));
+                    } else if ([[${link}]].indexOf(".mp4") !== -1)
+                        $(mediaId).append($(`<video id='${id}' controls style='width: 100%;'>`).append($("<source type='video/ogg'>").attr("src", [[${link}]])));
+                    else
+                        $(mediaId).append($(`<audio id='${id}' controls style='width: 100%;'>`).append($("<source type='audio/ogg'>").attr("src", [[${link}]])));
+                }
+            });
+        </script>
+    </div>
+
+    <div th:fragment="conversation()">
+        <div class="modal fade" id="session-modal-sm" data-backdrop="static">
+            <div id="modal-dialog" class="modal-dialog modal-lg">
+                <div id="modal-content" class="modal-content">
+                    <div id="modal-header" class="modal-header" style="display: inline-block;">
+                        <div class="row" style="margin-left: 10px; margin-right: 10px;">
+                            <button type="button" class="close col-12 text-right" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <div class="col-6" style="display: inline-block;">
+                                <span>Thông tin khách hàng</span>
+                                <div style="display: flex">
+                                    <div class="dropdown">
+                                        <img id="khImg1" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                             style="height: 35px" th:src="@{/img/avatar_default.jpg}">
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                            <img id="khImg2" style="height: 200px" th:src="@{/img/avatar_default.jpg}">
+                                        </div>
+                                    </div>
+                                    <div class="pl-2">
+                                        <div>
+                                            <span id="kh"></span>
+                                        </div>
+                                        <div class="time-chat text-left" id="sdtkh"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 float-right">
+                                <div class="text-right">
+                                    <span>Thông tin nhân viên</span>
+                                    <div style="display: flex; justify-content: end;">
+                                        <div class="dropdown">
+                                            <img id="btImg1" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                                 style="height: 35px" th:src="@{/img/avatar_default.jpg}">
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                                <img id="btImg2" style="height: 200px" th:src="@{/img/avatar_default.jpg}">
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="pl-2">
+                                            <span id="bt"></span>
+                                            <div class="time-chat" id="sdtbt"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="modal-body" class="modal-body">
+                        <table class="table table-no-border">
+                            <tbody id="conversation">
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="modal-footer" class="modal-footer" style="justify-content: center; padding: 0;">
+                        <div id="evaluate" class="row" style="justify-content: center;">
+                            <!--                        <span>Đánh giá chất lượng phục vụ: 9 điểm - Bình thường</span>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $('#evaluate').hide();
+            function processResponse(response) {
+                var message = [];
+                $.each(response, function(index, item) {
+                    var arr = [];
+                    processArrMessage(item, arr);
+                    console.log("Mảng");
+                    console.log(arr);
+                    message.push(arr);
+                });
+                console.log("listtttt");
+                console.log(message);
+                addMessageToPopup(message, response);
+            }
+            function processTitle(toDisname, toPhone, fromDisname, fromPhone, toAvatar, fromAvatar, callType) {
+                var agentDisname;
+                var agentPhone;
+                var agentAvatar;
+                var customerDisname;
+                var customerPhone;
+                var customerAvatar;
+
+                console.log("calltype|", callType)
+                if(callType == "callivr" || callType == "callin") {
+                    console.log("Vao if");
+                    agentDisname = toDisname;
+                    agentPhone = toPhone;
+                    agentAvatar = toAvatar;
+                    customerDisname = fromDisname;
+                    customerPhone = fromPhone;
+                    customerAvatar = fromAvatar;
+                } else { //callout || call#
+                    console.log("Vao else");
+                    customerDisname = toDisname;
+                    customerPhone = toPhone;
+                    customerAvatar = toAvatar;
+                    agentDisname = fromDisname;
+                    agentPhone = fromPhone;
+                    agentAvatar = fromAvatar;
+                }
+
+                $('#kh').text(customerDisname);
+                $('#sdtkh').text(customerPhone);
+                $('#bt').text(agentDisname);
+                $('#sdtbt').text(agentPhone);
+
+                checkImage(agentAvatar, function(isValid) {
+                    if (isValid) {
+                        console.log('URL agentAvatar hợp lệ');
+                        $('#btImg1').attr('src', agentAvatar);
+                        $('#btImg2').attr('src', agentAvatar);
+                    } else {
+                        console.log('URL agentAvatar không hợp lệ');
+                    }
+                });
+
+                checkImage(customerAvatar, function(isValid) {
+                    if (isValid) {
+                        console.log('URL customerAvatar hợp lệ');
+                        $('#khImg1').attr('src', customerAvatar);
+                        $('#khImg2').attr('src', customerAvatar);
+                    } else {
+                        console.log('URL customerAvatar không hợp lệ');
+                    }
+                });
+            }
+
+            function isImageUrl(url) {
+                return /\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i.test(url);
+            }
+
+            function checkImage(url, callback) {
+                if (!isImageUrl(url)) {
+                    callback(false);
+                    console.log("URL không phải là URL của ảnh.");
+                    return;
+                }
+
+                $.ajax({
+                    url: url,
+                    type: 'HEAD',
+                    success: function() {
+                        if(url != null && url != "" && url != "[[${@environment.getProperty('server.servlet.context-path')}]]") {
+                            callback(true);  // URL hợp lệ (không phải 404)
+                            console.log("url hợp lệ");
+                            console.log(url);
+                        }
+                        else
+                            callback(false);
+                    },
+                    error: function() {
+                        callback(false); // URL không hợp lệ (404)
+                    }
+                });
+            }
+
+            function processArrMessage(item, arr) {
+                if (item.content_type == "text")
+                    setArr(arr, item);
+                else if (item.content_type == "total")
+                    setArrTotal(item);
+            }
+
+            function setArr(arr, item) {
+                if (item.from_phone_number == 2) {
+                    arr.push(item.text);
+                    arr.push("");
+                } else if(item.from_phone_number == 1) { // type = "staff"
+                    arr.push("");
+                    arr.push(item.text);
+                }
+                arr.push(item.timestamp);
+            }
+
+            function setArrTotal(item) {
+                $('#evaluate').show();
+                $('#evaluate').append('<span>Đánh giá chất lượng phục vụ: ' + item.mark.replace('Điểm: ', '') + ' điểm</span>');
+            }
+
+            function addMessageToPopup(message, response) {
+                // Lặp qua mảng và thêm dữ liệu vào tbody
+                $.each(message, function(index, data) {
+                    console.log(data);
+                    var row = $('<tr>');
+                    $.each(data, function(colIndex, cellData) {
+                        console.log(data);
+                        if (colIndex == 0 || colIndex == 1) {
+                            var cell = $('<td>');
+                            if (colIndex === 1) {
+                                cell.addClass('float-right');
+                            }
+
+                            if (cellData != "") {
+                                cell.addClass('bordered-cell');
+                                var div1 = $('<div>').text(cellData);
+
+                                var div23 = $('<div>').css('display', 'flex').css('justify-content', 'space-between');
+                                var div2 = $('<div>').addClass('time-chat').text(data[2]);
+                                var div3 = $('<div>').addClass('mark-evaluate').text(response[index].mark);
+                                div3.appendTo(div23);
+                                div2.appendTo(div23);
+
+                                console.log("aaaaaaaa111");
+                                console.log(response[index]);
+                                if(response[index].evaluate.toLowerCase().includes("neutral") || response[index].evaluate.toLowerCase().includes("negative")) {
+                                    div3.addClass('neutral')
+                                } else {
+                                    div3.addClass('other')
+                                }
+
+                                div1.appendTo(cell);
+                                div23.appendTo(cell);
+                            }
+                            cell.appendTo(row);
+                        }
+                    });
+                    $('#conversation').append(row);
+                });
+            }
+
+            $("#session-modal-sm").on("hidden.bs.modal", function() {
+                console.log("bbbbbbbbbbb");
+                $('#conversation').empty();
+                $('#evaluate').empty();
+                $('#evaluate').hide();
+            });
+        </script>
+        <style>
+            .neutral {
+                color: #28a745;
+            }
+
+            .other {
+                color: #dc3545;
+            }
+
+            .table-no-border tr,
+            .table-no-border td,
+            .table-no-border th {
+                border: none !important;
+            }
+
+            td.bordered-cell {
+                display: inline-block;
+                border: 1px solid black !important;
+                padding: 8px;
+                /* Thêm padding để tăng khoảng cách từ border đến nội dung trong cell */
+                margin-top: 1px;
+                margin-bottom: 1px;
+                border-radius: 5px;
+                background-color: azure;
+                min-width: 120px;
+            }
+
+            .time-chat {
+                font-size: 10px;
+                text-align: right;
+            }
+
+            .mark-evaluate {
+                font-size: 10px;
+                text-align: left;
+            }
+
+            #modal-dialog {
+                position: absolute;
+                bottom: 5px; /* hoặc bất cứ vị trí nào bạn muốn */
+                right: 10px;  /* hoặc bất cứ vị trí nào bạn muốn */
+                margin: 0;
+                width: 450px;
+                height: 500px;
+                overflow-x: hidden;
+                overflow-y: auto;
+            }
+
+            #modal-header {
+                width: 450px;
+                height: 100px;
+                position: sticky;
+                top: 0;
+                z-index: 100; /* Đảm bảo header luôn nằm trên cùng */
+                background-color: azure; /* Đảm bảo nền của header không bị trong suốt */
+                padding-bottom: 0;
+                padding-top: 0;
+            }
+
+            #modal-footer {
+                position: sticky;
+                bottom: 0;
+                z-index: 100;
+                background-color: #c5ffff;
+            }
+
+            #modal-body {
+                width: 450px;
+                height: auto;
+                background-image: url("https://i.pinimg.com/736x/8c/98/99/8c98994518b575bfd8c949e91d20548b.jpg");
+            }
+
+            body.modal-open {
+                overflow: auto !important;
+                padding-right: 0 !important;
+            }
+
+            .modal-backdrop {
+                display: none;
+            }
+
+            #modal-content {
+                background-color: white;
+                min-height: 500px;
+            }
+        </style>
+    </div>
+
+    <div th:fragment="input-date-ranger-v3(label, name, value, required, disabled, format, start, end, isMaxDate)">
+        <label th:for="${name}"><span>[[${label}]] <span th:if="${required}" style="color: red;">*</span></span></label>
+        <input type="text" th:id="${name}" th:name="${name}" th:value="${value}" th:disabled="${disabled}"
+               class="form-control" th:required="${required}" style="height: 31px">
+        <script th:inline="javascript">
+            $(() => {
+                let currentDate = moment().subtract([[${end}]], 'days');
+                let defaultDate = moment().subtract([[${start}]], 'days');
+                let isMaxDate = [[${isMaxDate}]];
+                let objDaterangepicker = {
+                    autoUpdateInput: true,
+                    "locale": {
+                        format: [[${format}]],
+                        applyLabel: 'Apply',
+                        cancelLabel: 'Cancel',
+                        // customRangeLabel: 'Tùy chọn',
+                        // daysOfWeek: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+                        // monthNames: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12']
+                    },
+                    // "startDate": defaultDate,
+                    // "endDate": currentDate,
+                }
+                if(isMaxDate) {
+                    objDaterangepicker.maxDate = currentDate;
+                }
+                $('#' + [[${name}]]).on('focus', function() {
+                    $(this).daterangepicker(objDaterangepicker);
+                });
+                $('#' + [[${name}]]).daterangepicker(objDaterangepicker);
+                $('#' + [[${name}]]).on('apply.daterangepicker', function (ev, picker) {
+                    $(this).data('daterangepicker').setStartDate(defaultDate);
+                    $(this).data('daterangepicker').setEndDate(currentDate);
+                    // $(this).val('');
+                });
+                if(![[${value}]]) {
+                    $('#' + [[${name}]]).val('');
+                }
+            })
+        </script>
+    </div>
+
+    <div th:fragment="input-enable-basic(label, name, value, disabled)">
+        <div class="buu">
+            <div class="custom-control custom-switch custom-buu-label-top">
+                <input th:id="${name} + 'Check'" th:value="${value}" th:name="${name} + 'Check'" th:disabled="${disabled}" type="checkbox" class="custom-control-input custom-control-input-info">
+                <input hidden="hidden" th:id="${name}" th:value="${value}" th:name="${name}" type="text">
+                <label th:id="${name + 'Btl'}" class="custom-control-label" th:for="${name} + 'Check'">[[${label}]]</label>
+            </div>
+            <script th:inline="javascript">
+                if([[${value}]] == 0) {
+                    $(`#` + [[${name}]] + `Check`).prop("checked", false);
+                } else if([[${value}]] == 1) {
+                    $(`#` + [[${name}]] + `Check`).prop("checked", true);
+                } else if ([[${value}]] == null) {
+                    $(`#` + [[${name}]] + `Check`).prop("checked", false);
+                    $(`#` + [[${name}]] + `Check`).val("0");
+                    $(`#` + [[${name}]]).val("0");
+                }
+                $(`#` + [[${name}]] + `Check`).on("change", (e) => {
+                    if(e.target.checked === true) {
+                        $(`#` + [[${name}]]).val("1");
+                        $(`#` + [[${name}]] + `Check`).val("1");
+                    } else {
+                        $(`#` + [[${name}]]).val("0");
+                        $(`#` + [[${name}]] + `Check`).val("0");
+                    }
+                })
+            </script>
+        </div>
+    </div>
+
+
+    <div th:fragment="textarea-v2(label, name, value, rows, minlength, maxlength, required, disabled, readonly)">
+        <label th:for="${name}"><span>[[${label}]] <span th:if="${required}" style="color: red;">*</span></span></label>
+        <textarea type="text" th:rows="${rows}" th:id="${name}" th:name="${name}" th:value="${value}" th:text="${value}" th:disabled="${disabled}" th:readonly="${readonly}"
+                  class="form-control" th:required="${required}" th:minlength="${minlength}" th:maxlength="${maxlength}">
+        </textarea>
+    </div>
+
+    <th:block th:fragment="conversation-v2()">
+        <div id="conversation-header" class="conversation-header" style="display: inline-block;">
+            <div style="margin-left: 10px; margin-right: 10px;">
+                <div>
+                    <button id="conversation-close" type="button" class="close col-12 text-right" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <div class="col-6" style="display: inline-block;">
+                        <span>Thông tin khách hàng</span>
+                        <div style="display: flex">
+                            <div class="dropdown">
+                                <img id="khImg1" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                     style="height: 35px" th:src="@{/img/avatar_default.jpg}">
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                    <img id="khImg2" style="height: 200px" th:src="@{/img/avatar_default.jpg}">
+                                </div>
+                            </div>
+                            <div class="pl-2">
+                                <div>
+                                    <span id="kh"></span>
+                                </div>
+                                <div class="time-chat text-left" id="sdtkh"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 float-right">
+                        <div class="text-right">
+                            <span>Thông tin nhân viên</span>
+                            <div style="display: flex; justify-content: end;">
+                                <div class="dropdown">
+                                    <img id="btImg1" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                         style="height: 35px" th:src="@{/img/avatar_default.jpg}">
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                        <img id="btImg2" style="height: 200px" th:src="@{/img/avatar_default.jpg}">
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="pl-2">
+                                    <span id="bt"></span>
+                                    <div class="time-chat" id="sdtbt"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="conversation-body" class="conversation-body">
+            <table class="table table-no-border">
+                <tbody id="conversation">
+
+                </tbody>
+            </table>
+        </div>
+        <div id="conversation-footer" class="conversation-footer" style="justify-content: center; padding: 0;">
+            <div id="evaluate" class="row" style="justify-content: center;">
+                <!--                        <span>Đánh giá chất lượng phục vụ: 9 điểm - Bình thường</span>-->
+            </div>
+        </div>
+        <script>
+            $('#evaluate').hide();
+            $("#conversation-ne").addClass("display-none");
+            function processResponse(response) {
+                var message = [];
+                $.each(response, function(index, item) {
+                    var arr = [];
+                    processArrMessage(item, arr);
+                    console.log("Mảng");
+                    console.log(arr);
+                    message.push(arr);
+                });
+                console.log("listtttt");
+                console.log(message);
+                addMessageToPopup(message, response);
+            }
+            function processTitle(toDisname, toPhone, fromDisname, fromPhone, toAvatar, fromAvatar, callType) {
+                var agentDisname;
+                var agentPhone;
+                var agentAvatar;
+                var customerDisname;
+                var customerPhone;
+                var customerAvatar;
+
+                console.log("calltype|", callType)
+                if(callType == "callivr" || callType == "callin") {
+                    console.log("Vao if");
+                    agentDisname = toDisname;
+                    agentPhone = toPhone;
+                    agentAvatar = toAvatar;
+                    customerDisname = fromDisname;
+                    customerPhone = fromPhone;
+                    customerAvatar = fromAvatar;
+                } else { //callout || call#
+                    console.log("Vao else");
+                    customerDisname = toDisname;
+                    customerPhone = toPhone;
+                    customerAvatar = toAvatar;
+                    agentDisname = fromDisname;
+                    agentPhone = fromPhone;
+                    agentAvatar = fromAvatar;
+                }
+
+                $('#kh').text(customerDisname);
+                $('#sdtkh').text(customerPhone);
+                $('#bt').text(agentDisname);
+                $('#sdtbt').text(agentPhone);
+
+                checkImage(agentAvatar, function(isValid) {
+                    if (isValid) {
+                        console.log('URL agentAvatar hợp lệ');
+                        $('#btImg1').attr('src', agentAvatar);
+                        $('#btImg2').attr('src', agentAvatar);
+                    } else {
+                        console.log('URL agentAvatar không hợp lệ');
+                    }
+                });
+
+                checkImage(customerAvatar, function(isValid) {
+                    if (isValid) {
+                        console.log('URL customerAvatar hợp lệ');
+                        $('#khImg1').attr('src', customerAvatar);
+                        $('#khImg2').attr('src', customerAvatar);
+                    } else {
+                        console.log('URL customerAvatar không hợp lệ');
+                    }
+                });
+            }
+
+            function isImageUrl(url) {
+                return /\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i.test(url);
+            }
+
+            function checkImage(url, callback) {
+                if (!isImageUrl(url)) {
+                    callback(false);
+                    console.log("URL không phải là URL của ảnh.");
+                    return;
+                }
+
+                $.ajax({
+                    url: url,
+                    type: 'HEAD',
+                    success: function() {
+                        if(url != null && url != "" && url != "[[${@environment.getProperty('server.servlet.context-path')}]]") {
+                            callback(true);  // URL hợp lệ (không phải 404)
+                            console.log("url hợp lệ");
+                            console.log(url);
+                        }
+                        else
+                            callback(false);
+                    },
+                    error: function() {
+                        callback(false); // URL không hợp lệ (404)
+                    }
+                });
+            }
+
+            function processArrMessage(item, arr) {
+                if (item.content_type == "text")
+                    setArr(arr, item);
+                else if (item.content_type == "total")
+                    setArrTotal(item);
+            }
+
+            function setArr(arr, item) {
+                if (item.from_phone_number == 2) {
+                    arr.push(item.text);
+                    arr.push("");
+                } else if(item.from_phone_number == 1) { // type = "staff"
+                    arr.push("");
+                    arr.push(item.text);
+                }
+                arr.push(item.timestamp);
+            }
+
+            function setArrTotal(item) {
+                $('#evaluate').show();
+                $('#evaluate').append('<span>Đánh giá chất lượng phục vụ: ' + item.mark.replace('Điểm: ', '') + ' điểm</span>');
+            }
+
+            function addMessageToPopup(message, response) {
+                // Lặp qua mảng và thêm dữ liệu vào tbody
+                $.each(message, function(index, data) {
+                    console.log("dataaaaaaaaaaaaaaaaa");
+                    console.log(data);
+                    var row = $('<tr>');
+                    $.each(data, function(colIndex, cellData) {
+                        console.log("dataaaaaa");
+                        console.log(data);
+                        if (colIndex == 0 || colIndex == 1) {
+                            var cell = $('<td>');
+                            if (colIndex === 1) {
+                                cell.addClass('float-right');
+                            }
+
+                            if (cellData != "") {
+                                cell.addClass('bordered-cell');
+                                var div1 = $('<div>').text(cellData);
+
+                                var div23 = $('<div>').css('display', 'flex').css('justify-content', 'space-between');
+                                var div2 = $('<div>').addClass('time-chat').text(data[2]);
+                                var div3 = $('<div>').addClass('mark-evaluate').text(response[index].mark);
+                                div3.appendTo(div23);
+                                div2.appendTo(div23);
+
+                                console.log("aaaaaaaa111");
+                                console.log(response[index]);
+                                if(response[index].evaluate.toLowerCase().includes("neutral") || response[index].evaluate.toLowerCase().includes("negative")) {
+                                    div3.addClass('neutral')
+                                } else {
+                                    div3.addClass('other')
+                                }
+
+                                div1.appendTo(cell);
+                                div23.appendTo(cell);
+                            }
+                            cell.appendTo(row);
+                        }
+                    });
+                    $('#conversation').append(row);
+                });
+            }
+
+            $('#conversation-close').on('click', function() {
+                console.log('Nút close đã được nhấn');
+                closeConversation();
+            });
+
+            function closeConversation() {
+                $('#conversation').empty();
+                $('#evaluate').empty();
+                $('#evaluate').hide();
+                $('#conversation-table').removeClass('col-7');
+                $("#conversation-ne").addClass("display-none");
+            }
+        </script>
+        <style>
+            .display-none {
+                display: none !important;
+            }
+
+            .neutral {
+                color: #28a745;
+            }
+
+            .other {
+                color: #dc3545;
+            }
+
+            .table-no-border tr,
+            .table-no-border td,
+            .table-no-border th {
+                border: none !important;
+            }
+
+            td.bordered-cell {
+                display: inline-block;
+                border: 1px solid black !important;
+                padding: 8px;
+                /* Thêm padding để tăng khoảng cách từ border đến nội dung trong cell */
+                border-radius: 5px;
+                background-color: azure;
+                min-width: 120px;
+                margin: 5px;
+            }
+
+            .time-chat {
+                font-size: 10px;
+                text-align: right;
+            }
+
+            .mark-evaluate {
+                font-size: 10px;
+                text-align: left;
+            }
+
+            #conversation-dialog {
+                position: absolute;
+                bottom: 5px; /* hoặc bất cứ vị trí nào bạn muốn */
+                right: 10px;  /* hoặc bất cứ vị trí nào bạn muốn */
+                margin: 0;
+                overflow-x: hidden;
+                overflow-y: auto;
+            }
+
+            #conversation-header {
+                height: 80px;
+                position: sticky;
+                top: 0;
+                z-index: 100; /* Đảm bảo header luôn nằm trên cùng */
+                background-color: azure; /* Đảm bảo nền của header không bị trong suốt */
+                /*padding-bottom: 0;*/
+                /*padding-top: 0;*/
+                padding: 0;
+                margin: 0;
+                width: 100%;
+            }
+
+            #conversation-footer {
+                position: sticky;
+                bottom: 0;
+                z-index: 100;
+                background-color: #c5ffff;
+                margin-top: auto;
+            }
+
+            #conversation-body {
+                overflow-y: auto;
+                padding-top: 80px;
+                height: 100%;
+                background-image: url("https://i.pinimg.com/736x/8c/98/99/8c98994518b575bfd8c949e91d20548b.jpg");
+                background-size: cover;
+                position: absolute;
+                left: 0;
+                right: 0;
+            }
+
+            body.conversation-open {
+                overflow: auto !important;
+                padding-right: 0 !important;
+            }
+
+            .conversation-backdrop {
+                display: none;
+            }
+
+            #conversation-content {
+                background-color: white;
+                min-height: 500px;
+            }
+        </style>
+    </th:block>
+</hieutm>

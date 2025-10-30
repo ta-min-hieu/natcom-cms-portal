@@ -1,0 +1,13 @@
+oracle:
+  datasource:
+    my-natcom:
+      url: jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=127.0.0.1)(PORT=339))(ADDRESS=(PROTOCOL=TCP)(HOST=127.0.0.1)(PORT=3312))(LOAD_BALANCE=yes)(CONNECT_DATA=(SERVE=SHARED)(SERVICE_NAME= vas)))
+      username: MY_NATCOM
+      password: mYn@Tc0m123#$
+      schema: MY_NATCOM
+      driver-class-name: oracle.jdbc.OracleDriver
+      configuration:
+        maximum-pool-size: 10
+        minimum-idle: 2
+        idle-timeout: 30000
+        max-lifetime: 60000

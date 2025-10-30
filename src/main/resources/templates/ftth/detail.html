@@ -1,0 +1,133 @@
+<th:block th:fragment="detail" xmlns:th="http://www.thymeleaf.org">
+    <div class="row">
+        <div class="col-8">
+            <div class="d-flex">
+                <div style="font-weight: bold;">Order code: </div><div id="orderCodeDetail" style="margin-left: 5px;" th:text="${model.orderCode}"></div>
+                <div id="statusDetail" style="margin-left: 5px; border: 1px solid black; border-radius: 5px; padding: 2px;">
+                    <span th:if="${model.status == 0}" th:text="'New'"></span>
+                    <span th:if="${model.status == 1}" th:text="'Call'"></span>
+                    <span th:if="${model.status == 2}" th:text="'Unreachable'"></span>
+                    <span th:if="${model.status == 3}" th:text="'Survey'"></span>
+                    <span th:if="${model.status == 4}" th:text="'Sign contract'"></span>
+                    <span th:if="${model.status == 5}" th:text="'Deploy'"></span>
+                    <span th:if="${model.status == 6}" th:text="'Success'"></span>
+                    <span th:if="${model.status == 7}" th:text="'Cancel'"></span>
+                </div>
+            </div>
+            <div class="d-flex" style="margin-top: 10px;">
+                <div>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15.8271 3.11099C17.6166 3.11099 19.0673 4.56192 19.0673 6.35173C19.0673 8.14154 17.6166 9.59247 15.8271 9.59247C15.6586 9.59247 15.4931 9.57961 15.3315 9.55481M16.7778 12.3188C17.0757 12.3303 17.3762 12.3471 17.6816 12.3693C19.8964 12.5304 21.5974 14.3274 21.9147 16.5256L21.9764 16.9531C22.1592 18.2201 21.2792 19.4026 20.0066 19.5391C19.8669 19.5541 19.7284 19.5684 19.5912 19.582M13.2956 5.88877C13.2956 8.03654 11.5547 9.77766 9.40733 9.77766C7.25992 9.77766 5.51909 8.03654 5.51909 5.88877C5.51909 3.74099 7.25992 1.99988 9.40733 1.99988C11.5547 1.99988 13.2956 3.74099 13.2956 5.88877ZM4.39846 21.7106C7.98775 22.0936 10.8388 22.098 14.4227 21.7136C15.9498 21.5498 17.0058 20.1308 16.7864 18.6105L16.7124 18.0974C16.3317 15.4595 14.2905 13.3031 11.6327 13.1099C10.1166 12.9996 8.70351 12.9998 7.18441 13.1105C4.52562 13.3042 2.48292 15.4607 2.1021 18.0996L2.02924 18.6045C1.8095 20.1272 2.86898 21.5475 4.39846 21.7106Z" stroke="#282930" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+
+                </div>
+                <div style="font-weight: bold; font-size: 18px; margin-left: 5px;">Customer info: </div>
+            </div>
+            <div class="d-flex" style="margin-top: 10px;">
+                <div class="col-3">
+                    <div style="font-weight: bold;">Fullname:</div>
+                    <div th:text="${model.name}"></div>
+                </div>
+                <div class="col-3">
+                    <div style="font-weight: bold;">Phonenumber:</div>
+                    <div style="display: flex;">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g clip-path="url(#clip0_2020_59932)">
+                                <path d="M4.60396 1.88727L7.03416 5.20119C7.2817 5.53874 7.19755 6.01458 6.84927 6.24677C6.03623 6.7888 5.70506 7.80107 6.25749 8.60707C6.5905 9.09295 7.05373 9.67477 7.68948 10.3105C8.32523 10.9463 8.90705 11.4095 9.39293 11.7425C10.1989 12.2949 11.2112 11.9638 11.7532 11.1507C11.9854 10.8024 12.4613 10.7183 12.7988 10.9658L16.1127 13.396C16.6435 13.7853 16.6256 14.5837 16.078 14.9488L14.7003 15.8673C13.7246 16.5177 12.5372 16.7456 11.5143 16.1723C10.3408 15.5145 8.55053 14.2542 6.14818 11.8518C3.74584 9.44947 2.48548 7.6592 1.82773 6.48575C1.25436 5.46284 1.48226 4.2754 2.13273 3.2997L3.05119 1.92202C3.41628 1.37437 4.21473 1.35651 4.60396 1.88727Z" stroke="#282930" stroke-width="1.125"/>
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_2020_59932">
+                                    <rect width="18" height="18" fill="white"/>
+                                </clipPath>
+                            </defs>
+                        </svg>
+
+                        <div th:text="${model.isdnee}" style="margin-left: 10px;"></div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div style="font-weight: bold;">Email:</div>
+                    <div style="display: flex;">
+                        <svg width="19" height="20" viewBox="0 0 19 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1.71701 6.49349L1.61569 12.2676C1.59358 13.5275 1.58253 14.1575 1.81928 14.643C2.02754 15.0701 2.36565 15.4203 2.78516 15.6434C3.26209 15.897 3.89205 15.9081 5.15198 15.9302L12.9508 16.0671C14.2107 16.0892 14.8407 16.1002 15.3262 15.8635C15.7533 15.6552 16.1035 15.3171 16.3266 14.8976C16.5802 14.4207 16.5913 13.7907 16.6134 12.5308L16.7147 6.75666M1.71701 6.49349L8.57085 10.4213C8.77995 10.5411 8.8845 10.601 8.99579 10.6258C9.0943 10.6476 9.19621 10.6494 9.29542 10.631C9.40751 10.6102 9.51411 10.554 9.72728 10.4416L16.7147 6.75666M1.71701 6.49349C1.72312 6.14523 1.72617 5.9711 1.74799 5.82525C1.8986 4.81809 2.70691 4.03765 3.71874 3.92246C3.86527 3.90578 4.0394 3.90884 4.38766 3.91495L14.1362 4.08601C14.4844 4.09212 14.6585 4.09517 14.8044 4.11698C15.8116 4.2676 16.592 5.07591 16.7072 6.08774C16.7239 6.23426 16.7208 6.4084 16.7147 6.75666" stroke="#282930" stroke-width="1.125" stroke-linecap="round"/>
+                        </svg>
+
+                        <div th:text="${model.emailee}" style="margin-left: 10px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex" style="margin-top: 10px;">
+                <div>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16.9501 17.7321C17.9291 18.0817 18.5958 18.5272 18.8659 19.0122C19.136 19.4971 18.9974 19.9998 18.4676 20.4566C17.9377 20.9134 17.0405 21.3038 15.8894 21.5786C14.7382 21.8533 13.3849 21.9999 12.0004 21.9999C10.6159 21.9999 9.26255 21.8533 8.1114 21.5786C6.96026 21.3038 6.06305 20.9134 5.53324 20.4566C5.00343 19.9998 4.8648 19.4971 5.1349 19.0122C5.405 18.5272 6.07168 18.0817 7.05065 17.7321M19.0004 8.79988C19.0004 12.5554 12.0004 18.9999 12.0004 18.9999C12.0004 18.9999 5.0004 12.5554 5.0004 8.79988C5.0004 5.04434 8.1344 1.99988 12.0004 1.99988C15.8664 1.99988 19.0004 5.04434 19.0004 8.79988ZM14.6254 8.79988C14.6254 10.2082 13.4501 11.3499 12.0004 11.3499C10.5506 11.3499 9.3754 10.2082 9.3754 8.79988C9.3754 7.39155 10.5506 6.24988 12.0004 6.24988C13.4501 6.24988 14.6254 7.39155 14.6254 8.79988Z" stroke="#282930" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div style="font-weight: bold; font-size: 18px; margin-left: 5px;">Address</div>
+            </div>
+            <div class="d-flex" style="margin-top: 10px;">
+                <div class="col-3">
+                    <div style="font-weight: bold;">Full address</div>
+                    <div th:text="${model.proviceName + ' - ' + model.districtName + ' - ' + model.commune}"></div>
+                </div>
+                <div class="col-3">
+                    <div style="font-weight: bold;">Branch</div>
+                    <div th:text="${model.ftthBranch?.name}"></div>
+                </div>
+            </div>
+            <div class="d-flex" style="margin-top: 10px;">
+                <div>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2 8.42157C2 8.42157 5.3292 4.5 12 4.5C18.6708 4.5 22 8.42157 22 8.42157M5.125 12.3431C5.125 12.3431 7.89314 9.72876 12 9.72876C16.1069 9.72876 18.875 12.3431 18.875 12.3431M8.25 15.6111C8.25 15.6111 9.8125 14.3039 12 14.3039C14.1875 14.3039 15.75 15.6111 15.75 15.6111M12.0111 19.5H12" stroke="#282930" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div style="font-weight: bold; font-size: 18px; margin-left: 5px;">Service Info</div>
+            </div>
+            <div class="d-flex" style="margin-top: 10px;">
+                <div class="col-3">
+                    <div style="font-weight: bold;">Package</div>
+                    <div th:text="${model.packageName}"></div>
+                </div>
+                <!--                <div class="col-3">-->
+                <!--                    <div>Speed</div>-->
+                <!--                    <div style="font-weight: bold;">Nor</div>-->
+                <!--                </div>-->
+            </div>
+            <div class="d-flex" style="margin-top: 10px;">
+                <div>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12.0004 9.79547V14.6608M12.0108 17.0935H12.0004M11.5475 3.74952L2.06633 19.7764C1.87449 20.1007 2.12419 20.4993 2.51922 20.4993H21.4816C21.8766 20.4993 22.1263 20.1007 21.9344 19.7764L12.4533 3.74952C12.2559 3.41585 11.7449 3.41585 11.5475 3.74952Z" stroke="#F47920" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+
+                </div>
+                <div style="font-weight: bold; font-size: 18px; margin-left: 5px;">Note</div>
+            </div>
+            <div class="d-flex" style="margin-top: 10px;">
+                <div style="background-color: #F479201A; border-radius: 8px; padding: 5px;" th:text="${model.note}"></div>
+            </div>
+        </div>
+        <div class="col-4" th:if="${model.status != 0}">
+            <div style="font-weight: bold; font-size: 18px;">Number of customer contact attempts</div>
+            <div class="mt-2" style="font-size: 16px; font-weight: bold;">Branch contact success with customer</div>
+            <div class="mt-2" th:if="${model.status >= 2}" th:text="${model.surveyDate != null ? 'Yes' : 'No'}">-</div>
+            <div class="mt-2" th:unless="${model.status >= 2}">-</div>
+            <div class="mt-2" style="font-size: 16px; font-weight: bold;">Reason if can not contact success?</div>
+            <div class="mt-2" th:if="${model.reasonCanNotContactSuccess != null && model.reasonCanNotContactSuccess != ''}" th:text="${model.reasonCanNotContactSuccess}">-</div>
+            <div class="mt-2" th:unless="${model.reasonCanNotContactSuccess != null && model.reasonCanNotContactSuccess != ''}">-</div>
+            <div class="mt-2" style="font-size: 16px; font-weight: bold;">Customer feedback</div>
+            <div class="mt-2" th:if="${model.customerFeedback != null && model.customerFeedback != ''}" th:text="${model.customerFeedback}">-</div>
+            <div class="mt-2" th:unless="${model.customerFeedback != null && model.customerFeedback != ''}">-</div>
+            <div class="mt-2" style="font-size: 16px; font-weight: bold;">Branch can deploy for this?</div>
+            <div class="mt-2" th:if="${model.status >= 4}" th:text="${model.signContractDate != null ? 'Yes' : 'No'}">-</div>
+            <div class="mt-2" th:unless="${model.status >= 4}" th:text="'-'">-</div>
+            <div class="mt-2" th:text="'Sign contract yet?'" style="font-size: 16px; font-weight: bold;"></div>
+            <div class="mt-2" th:if="${model.status >= 5}" th:text="${model.deployDate != null ? 'Yes' : 'No'}">-</div>
+            <div class="mt-2" th:unless="${model.status >= 5}" th:text="'-'">-</div>
+            <div class="mt-2" th:text="'Final result: Order success or fail'" style="font-size: 16px; font-weight: bold;"></div>
+            <div class="mt-2" th:if="${model.status >= 6}" th:text="${model.successDate != null ? 'Yes' : 'No'}">-</div>
+            <div class="mt-2" th:unless="${model.status >= 6}" th:text="'-'">-</div>
+            <div class="mt-2" th:text="'Remark addition infor'" style="font-size: 16px; font-weight: bold;"></div>
+            <div class="mt-2" th:if="${model.remarkAdditionInfo != null && model.remarkAdditionInfo != ''}" th:text="${model.remarkAdditionInfo}">-</div>
+            <div class="mt-2" th:unless="${model.remarkAdditionInfo != null && model.remarkAdditionInfo != ''}">-</div>
+        </div>
+    </div>
+</th:block>

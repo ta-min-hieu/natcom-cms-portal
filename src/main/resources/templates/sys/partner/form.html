@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{cms_layout_1.html}">
+<head>
+</head>
+<body id="page-top">
+<div class="content" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form id="form" th:action="@{/sys/partner/save}" class="create-role" method="post"
+                      th:object="${model}" enctype="multipart/form-data">
+                    <input type="hidden" id="id" name="id" th:value="${model.id}?${model.id}">
+                    <div class="row col-12 mb-3">
+                        <div class="col-6 mb-3">
+                            <label for="name" style="font-weight: bold"><span>[[#{name}]] <span
+                                    style="color: red;">*</span></span></label>
+                            <input type="text" id="name" name="name" th:field=*{name}
+                                   class="form-control" required maxlength="200" style="height: 31px;">
+                        </div>
+
+<!--                        <div class="col-6 mb-3">-->
+<!--                            <label for="code" style="font-weight: bold"><span>[[#{partnerCode}]] <span-->
+<!--                                    style="color: red;">*</span></span></label>-->
+<!--                            <input type="text" id="code" name="code" th:field=*{code}-->
+<!--                                   class="form-control" required maxlength="200" style="height: 31px;">-->
+<!--                        </div>-->
+
+                        <div class="col-6 mb-3">
+                            <label for="token" style="font-weight: bold"><span>[[#{token}]]</span></label>
+                            <input type="text" id="token" name="token" th:field=*{token} class="form-control" readonly style="height: 31px;">
+                        </div>
+
+                        <div class="col-6 mb-3">
+                            <label for="status" style="font-weight: bold"><span>[[#{status}]] <span
+                                    style="color: red;">*</span></span></label>
+                            <select class="form-control" id="status" name="status" required style="height: 31px;">
+                                <option value="1" th:selected="${model.status == 1}" th:text="#{active}"></option>
+                                <option value="0" th:selected="${model.status == 0}" th:text="#{deactive}"></option>
+                            </select>
+                        </div>
+
+                        <div class="col-6 mb-3" th:insert="component :: input-text-v3(#{email}, 'email', *{email}, 0, 255, false, false, false)"></div>
+                        <div class="col-6 mb-3" th:insert="component :: input-text-v3(#{address}, 'address', *{address}, 0, 255, false, false, false)"></div>
+                        <div class="col-6 mb-3" th:insert="component :: input-text-v3(#{director}, 'director', *{director}, 0, 255, false, false, false)"></div>
+                        <div class="col-6 mb-3" th:insert="component :: input-text-v2(#{phone} + ' (+...)', 'contact', *{contact}, 0, 45, false, false, '\+[0-9]*')"></div>
+                        <div class="col-6 mb-3" th:insert="component :: input-text-v3(#{callbackUrl}, 'callbackUrl', *{callbackUrl}, 0, 255, false, false, false)"></div>
+                        <div class="col-6 mb-3" th:insert="component :: textarea-v1(#{description}, 'description', *{description}, 4, 0, 1024, false, false)"></div>
+                    </div>
+
+                    <div class="col d-flex align-items-end justify-content-center pt-3"
+                         style="padding-left: 0 !important;">
+                        <button id="submitButton" type="submit" class="btn btn-primary me-md-2" th:text="#{save}" style="width: 125px; left: 886px; top: 389px; border-radius: 3px;"></button>
+                        <a th:href="@{/sys/partner/index}" class="btn btn-primary me-md-2 ml-3" th:text="#{back}" style="width: 125px; left: 886px; top: 389px; border-radius: 3px;"></a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="delete-modal-sm">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" th:text="#{action.todo}"></h4>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button id="apply" type="button" class="btn btn-primary" th:text="#{apply}"></button>
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" layout:fragment="content_page_script" th:inline="javascript">
+    $('#description').css('height', '100px');
+    $('#submitButton').click(function(e) {
+        e.preventDefault();
+        let status = $('#status').val();
+        let partnerId = $('#id').val();
+
+        if ($('#form')[0].checkValidity()) { // Kiểm tra tính hợp lệ
+            if(status == 0 && partnerId != null && partnerId != '')
+                callApiCheckHaveAppStatus012(partnerId);
+            else
+                $('#form').submit();
+       } else {
+          e.preventDefault();
+          $('#form')[0].reportValidity(); // Hiển thị thông báo lỗi
+       }
+    });
+
+    function callApiCheckHaveAppStatus012(id) {
+          $.ajax({
+              url: [[${@environment.getProperty('server.servlet.context-path')}]] + `/mini-app/count-have-app-status-012?partnerId=${id}`,
+              type: 'GET',
+              success: function(response) {
+                  console.log('Dữ liệu đã nhận:', response);
+                  if(response > 0) {
+                      $('.modal-title').text([[#{warn.in-active.partner}]].replace('()', response));
+                      $("#delete-modal-sm").modal('show');
+                  } else
+                      $('#form').submit();
+              },
+              error: function(xhr, status, error) {
+                  console.error('Lỗi khi gọi API:', error);
+              }
+          });
+      }
+
+    $("#apply").click(function() {
+        $('#form').submit();
+        $('#delete-modal-sm').modal('hide');
+    });
+</script>
+</html>

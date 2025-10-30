@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{cms_layout_1.html}">
+<head>
+</head>
+<body id="page-top">
+<div class="content" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form id="form-search" th:action="@{'/selfcare/ftth-register/index'}" method="get">
+                    <div class="row">
+                        <div class="col-3" th:insert="component :: input-text-v3(#{orderCode}, 'orderCode', *{orderCode}, 0, 8, false, false, false)"></div>
+                        <div class="col-3" th:insert="component :: input-text-v3(#{packageCode}, 'packageCode', *{packageCode}, 0, 50, false, false, false)"></div>
+                        <div class="col-3" th:insert="component :: input-text-v3(#{isdn}, 'isdnee', *{isdnee}, 0, 255, false, false, false)"></div>
+                        <div class="col-3" th:insert="component :: input-text-v3(#{name}, 'name', *{name}, 0, 255, false, false, false)"></div>
+                        <div class="col-3 mt-3" th:insert="component :: select2-v2('GET', #{province}, 'proviceId', *{proviceId}, '/selfcare/ftth-register/ajax-search-province', 'Choose province', ${province?.name}, false, false, 0, null)"></div>
+                        <div th:if="${branchIdRole == null}" class="col-3 mt-3" th:insert="component :: select2-v2('GET', #{branch}, 'branchIdSS', *{branchId}, '/selfcare/ftth-register/ajax-search-branch', 'Choose branch', ${branch?.name}, false, false, 0, null)"></div>
+                        <div class="col-3 mt-3" th:with="options=${@thymeleaf.arrays('', 'All', '0', 'New', '1', 'Call', '2', 'Unreachable', '3', 'Survey', '4', 'Sign contract', '5', 'Deploy', '6', 'Success', '7', 'Cancel')}">
+                            <div th:replace="component :: select-default-v2(#{status}, 'status', *{status}, false, false, ${options})"></div>
+                        </div>
+                        <div class="col-3 mt-3" th:insert="component :: input-date-ranger-v2(#{dateRanger}, 'dateRanger', *{dateRanger}, false, false, 'YYYY-MM-DD', 6, 0)"></div>
+
+                        <div th:class="'col-12 text-center pt-3'" class="col-12 text-center pt-3">
+                            <button type="submit" style="cursor: pointer;" class="btn btn-primary mx-2">
+                                <i class="fas fa-search"></i><span class="px-2" th:text="#{search}"></span>
+                            </button>
+                            <button id="reset" type="button" value="Reset" style="cursor: pointer;" class="btn btn-primary mx-2">
+                                <i class="fa fa-refresh"></i><span class="px-2" th:text="#{reset}"></span>
+                            </button>
+                            <a href="javascript:void(0)" id="exportLink" style="cursor: pointer;" class="btn btn-primary" onclick="submitForm()">
+                                <i class="fas fa-file-download"></i><span class="px-2" th:text="#{export}"></span>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body table-responsive">
+                <table class="table custom-table table-bordered">
+                    <thead class="thead-light">
+                    <tr>
+                        <th scope="col" th:text="#{no}" class="text-center"></th>
+                        <th scope="col" th:text="#{orderCode}" class="text-center"></th>
+                        <th scope="col" th:text="#{ftthPackage}" class="text-center"></th>
+                        <th scope="col" th:text="#{name}" class="text-center"></th>
+                        <th scope="col" th:text="#{isdnee}" class="text-center"></th>
+                        <th scope="col" th:text="#{email}" class="text-center"></th>
+                        <th scope="col" th:text="#{address}" class="text-center"></th>
+                        <th scope="col" th:text="#{branch}" class="text-center"></th>
+                        <th scope="col" th:text="#{status}" class="text-center"></th>
+                        <th scope="col" th:text="#{createdAt}" class="text-center"></th>
+                        <th scope="col" th:text="#{action}" class="text-center"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="model, item:${models}">
+                        <td class="text-center" th:text="${item.index + pageSize*currentPage - (pageSize - 1)}">1</td>
+                        <td th:text="${model.orderCode}"></td>
+                        <td th:text="${model.packageName}"></td>
+                        <td th:text="${model.name}"></td>
+                        <td th:text="${model.isdnee}"></td>
+                        <td th:text="${model.emailee}"></td>
+                        <td th:text="${model.proviceName + ' - ' + model.districtName + ' - ' + model.commune}"></td>
+                        <td th:text="${model.ftthBranch?.name}"></td>
+                        <td>
+                            <span th:if="${model.status == 0}" th:text="'New'"></span>
+                            <span th:if="${model.status == 1}" th:text="'Call'"></span>
+                            <span th:if="${model.status == 2}" th:text="'Unreachable'"></span>
+                            <span th:if="${model.status == 3}" th:text="'Survey'"></span>
+                            <span th:if="${model.status == 4}" th:text="'Sign contract'"></span>
+                            <span th:if="${model.status == 5}" th:text="'Deploy'"></span>
+                            <span th:if="${model.status == 6}" th:text="'Success'"></span>
+                            <span th:if="${model.status == 7}" th:text="'Cancel'"></span>
+                        </td>
+                        <td th:text="${#dates.format(model.createdAt, 'yyyy-MM-dd HH:mm:ss')}" style="white-space: nowrap;" class="text-center"></td>
+                        <td class="text-center" style="white-space: nowrap;">
+                            <div class="d-flex justify-content-center align-items-center flex-wrap" style="gap: 5px;">
+                                <a title="Detail" th:attr="onclick=|seeDetail(${model.id})|" class="btn btn-sm">
+                                    <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M7.99998 7.33342C8.73636 7.33342 9.33331 6.73646 9.33331 6.00008C9.33331 5.2637 8.73636 4.66675 7.99998 4.66675C7.2636 4.66675 6.66665 5.2637 6.66665 6.00008C6.66665 6.73646 7.2636 7.33342 7.99998 7.33342Z" fill="#555666"/>
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M1.00262 5.80029C1.9369 2.82569 4.71551 0.666748 8.00011 0.666748C11.2847 0.666748 14.0634 2.82572 14.9976 5.80034C15.0385 5.93039 15.0385 6.06983 14.9976 6.19987C14.0633 9.17447 11.2847 11.3334 8.00012 11.3334C4.7155 11.3334 1.93688 9.17444 1.00262 6.19982C0.961773 6.06978 0.961774 5.93034 1.00262 5.80029ZM5.33331 6.00008C5.33331 4.52732 6.52722 3.33341 7.99998 3.33341C9.47274 3.33341 10.6666 4.52732 10.6666 6.00008C10.6666 7.47284 9.47274 8.66675 7.99998 8.66675C6.52722 8.66675 5.33331 7.47284 5.33331 6.00008Z" fill="#555666"/>
+                                    </svg>
+                                </a>
+                                <a th:if="${model.status == 0}" th:attr="onclick=|updateBranch('${model.id}', '${currentPage}', '${pageSize}', &quot;${#strings.escapeJavaScript(model.name)}&quot;, '${model.isdnee}', &quot;${#strings.escapeJavaScript(model.isdnee)}&quot;, '${model.proviceName + ' ' + model.districtName}', '${model.packageName}', &quot;${#strings.escapeJavaScript(model.note)}&quot;, '${model.orderCode}')|" title="Deliver the order" class="btn">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12.4313 12.6406C12.2738 12.5581 12.0968 12.5436 11.9368 12.6018L8.57194 13.809C8.40709 13.9012 8.21557 13.9521 8.01436 13.9521H5.98527C5.85194 13.9521 5.74285 13.843 5.74285 13.7097C5.74285 13.5763 5.85194 13.4672 5.98527 13.4672H8.01436C8.1283 13.4672 8.23981 13.4381 8.33436 13.3897L8.37072 13.3678C8.51375 13.2781 8.618 13.1375 8.64466 12.9751C8.65914 12.8898 8.65481 12.8024 8.63198 12.719C8.60916 12.6355 8.56838 12.5581 8.5125 12.4921C8.45663 12.426 8.387 12.373 8.3085 12.3367C8.22999 12.3004 8.1445 12.2816 8.058 12.2818H6.54284C6.09921 12.2818 5.65557 12.1218 5.29436 11.8333C4.70285 11.3606 3.4786 10.7303 1.86163 11.7169V14.66C2.27618 14.6624 3.14406 14.7375 4.35133 15.2103C5.48345 15.6539 6.6883 15.7557 7.83739 15.506C9.01557 15.249 10.778 14.7278 12.4653 13.6927C12.5986 13.6103 12.698 13.4721 12.7344 13.3121C12.7974 13.0454 12.6713 12.769 12.4313 12.6406Z" fill="#4102D4"/>
+                                        <path d="M1.37672 10.9152L0.339148 10.9006L0.327026 15.2934L1.36218 15.3079L1.37672 15.2934V10.9152Z" fill="#4102D4"/>
+                                        <path d="M2.85987 2.71003L7.54321 5.37974L12.2266 2.71002L7.81456 0.198984C7.64581 0.102943 7.44063 0.102943 7.27188 0.198984L2.85987 2.71003Z" fill="#4102D4"/>
+                                        <path d="M12.5718 3.29065L7.87845 5.96606V11.3016L12.2844 8.79396C12.4618 8.69301 12.5718 8.50148 12.5718 8.2936V3.29065Z" fill="#4102D4"/>
+                                        <path d="M7.20797 11.3015V5.96606L2.51465 3.29065V8.2936C2.51465 8.50148 2.62466 8.69301 2.80204 8.79396L7.20797 11.3015Z" fill="#4102D4"/>
+                                    </svg>
+                                </a>
+                                <a th:if="${model.status == 1 || model.status == 2}" th:attr="onclick=|updateStatus('${model.id}', '${currentPage}', '${pageSize}', 2)|" title="Call to unreachable" class="btn">
+                                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M3.09245 0.677492L5.25263 3.6232C5.47266 3.92324 5.39787 4.34622 5.08828 4.5526C4.36558 5.03441 4.0712 5.9342 4.56225 6.65065C4.79405 6.98885 5.09683 7.37935 5.48863 7.80421L12.6061 0.686771C12.8013 0.491508 13.1179 0.491508 13.3132 0.686771C13.5084 0.882033 13.5084 1.19861 13.3132 1.39388L1.39404 13.313C1.19878 13.5083 0.882195 13.5083 0.686933 13.313C0.491671 13.1178 0.491671 12.8012 0.686933 12.6059L4.11373 9.17911C2.20514 7.22187 1.17642 5.74933 0.624686 4.76503C0.115025 3.85578 0.317608 2.80027 0.895799 1.93299L1.71221 0.708378C2.03674 0.221584 2.74647 0.205702 3.09245 0.677492Z" fill="#FE810A"/>
+                                        <path d="M7.34929 9.4377C8.06574 9.92875 8.96554 9.63437 9.44734 8.91167C9.65373 8.60209 10.0767 8.52729 10.3767 8.74732L13.3225 10.9075C13.7942 11.2535 13.7784 11.9632 13.2916 12.2877L12.067 13.1042C11.1997 13.6823 10.1442 13.8849 9.23491 13.3753C8.35067 12.8796 7.0724 11.999 5.40269 10.4414L6.80756 9.03654C6.99962 9.18933 7.18094 9.32231 7.34929 9.4377Z" fill="#FE810A"/>
+                                    </svg>
+                                </a>
+                                <a th:if="${model.status == 1 || model.status == 2}" th:attr="onclick=|updateStatus('${model.id}', '${currentPage}', '${pageSize}', 3)|" title="Call to survey" class="btn">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M14.3503 2.30981C14.5473 2.50328 14.5502 2.81985 14.3568 3.01689L11.7702 5.65123C11.5298 5.89604 11.13 5.89392 10.8926 5.64477L9.63802 4.32834C9.44751 4.12844 9.45513 3.81195 9.65504 3.62144C9.85494 3.43093 10.1714 3.43855 10.3619 3.63846L11.3387 4.66339L13.6432 2.31628C13.8367 2.11924 14.1532 2.11634 14.3503 2.30981Z" fill="#0C9A02"/>
+                                        <path d="M4.09239 1.67749L6.25257 4.6232C6.4726 4.92324 6.39781 5.34621 6.08822 5.5526C5.36552 6.03441 5.07114 6.9342 5.56219 7.65065C5.85821 8.08254 6.26996 8.59971 6.83507 9.16482C7.40019 9.72994 7.91736 10.1417 8.34925 10.4377C9.0657 10.9288 9.96549 10.6344 10.4473 9.91168C10.6537 9.60209 11.0767 9.5273 11.3767 9.74733L14.3224 11.9075C14.7942 12.2535 14.7783 12.9632 14.2915 13.2878L13.0669 14.1042C12.1996 14.6824 11.1441 14.8849 10.2349 14.3753C9.1918 13.7906 7.60045 12.6703 5.46503 10.5349C3.32962 8.39945 2.2093 6.8081 1.62462 5.76503C1.11496 4.85578 1.31755 3.80027 1.89574 2.93299L2.71214 1.70838C3.03667 1.22158 3.74641 1.2057 4.09239 1.67749Z" fill="#0C9A02"/>
+                                    </svg>
+                                </a>
+                                <a th:if="${model.status == 3}" th:attr="onclick=|updateStatus('${model.id}', '${currentPage}', '${pageSize}', 4)|" title="Survey to sign contract" class="btn">
+                                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 2.5V0.0650001C9.24387 0.132758 9.4664 0.261663 9.6465 0.4395L11.5605 2.3535C11.7386 2.53351 11.8677 2.75605 11.9355 3H9.5C9.36743 2.99987 9.24033 2.94715 9.14659 2.85341C9.05285 2.75967 9.00013 2.63257 9 2.5ZM12 4V12.5C11.9996 12.8977 11.8414 13.279 11.5602 13.5602C11.279 13.8414 10.8977 13.9996 10.5 14H3.5C3.1023 13.9996 2.721 13.8414 2.43978 13.5602C2.15856 13.279 2.0004 12.8977 2 12.5V1.5C2.0004 1.1023 2.15856 0.720997 2.43978 0.439778C2.721 0.15856 3.1023 0.000397108 3.5 0H8V2.5C8.0004 2.8977 8.15856 3.279 8.43978 3.56022C8.721 3.84144 9.1023 3.9996 9.5 4H12ZM4.5 9.5C4.5 9.40111 4.47068 9.30444 4.41573 9.22221C4.36079 9.13999 4.2827 9.0759 4.19134 9.03806C4.09998 9.00022 3.99945 8.99031 3.90245 9.00961C3.80546 9.0289 3.71637 9.07652 3.64645 9.14645C3.57652 9.21637 3.5289 9.30546 3.50961 9.40245C3.49031 9.49944 3.50022 9.59998 3.53806 9.69134C3.5759 9.7827 3.63999 9.86079 3.72221 9.91574C3.80444 9.97068 3.90111 10 4 10C4.13261 10 4.25979 9.94732 4.35355 9.85355C4.44732 9.75979 4.5 9.63261 4.5 9.5ZM4.5 7.5C4.5 7.40111 4.47068 7.30444 4.41573 7.22221C4.36079 7.13999 4.2827 7.0759 4.19134 7.03806C4.09998 7.00022 3.99945 6.99031 3.90245 7.00961C3.80546 7.0289 3.71637 7.07652 3.64645 7.14645C3.57652 7.21637 3.5289 7.30546 3.50961 7.40245C3.49031 7.49944 3.50022 7.59998 3.53806 7.69134C3.5759 7.7827 3.63999 7.86079 3.72221 7.91574C3.80444 7.97068 3.90111 8 4 8C4.13261 8 4.25979 7.94732 4.35355 7.85355C4.44732 7.75979 4.5 7.63261 4.5 7.5ZM4.5 5.5C4.5 5.40111 4.47068 5.30444 4.41573 5.22221C4.36079 5.13999 4.2827 5.0759 4.19134 5.03806C4.09998 5.00022 3.99945 4.99031 3.90245 5.00961C3.80546 5.0289 3.71637 5.07652 3.64645 5.14645C3.57652 5.21637 3.5289 5.30546 3.50961 5.40245C3.49031 5.49945 3.50022 5.59998 3.53806 5.69134C3.5759 5.7827 3.63999 5.86079 3.72221 5.91573C3.80444 5.97068 3.90111 6 4 6C4.13261 6 4.25979 5.94732 4.35355 5.85355C4.44732 5.75979 4.5 5.63261 4.5 5.5ZM10.5 9.5C10.5 9.36739 10.4473 9.24021 10.3536 9.14645C10.2598 9.05268 10.1326 9 10 9H5.5C5.36739 9 5.24021 9.05268 5.14645 9.14645C5.05268 9.24021 5 9.36739 5 9.5C5 9.63261 5.05268 9.75979 5.14645 9.85355C5.24021 9.94732 5.36739 10 5.5 10H10C10.1326 10 10.2598 9.94732 10.3536 9.85355C10.4473 9.75979 10.5 9.63261 10.5 9.5ZM10.5 7.5C10.5 7.36739 10.4473 7.24021 10.3536 7.14645C10.2598 7.05268 10.1326 7 10 7H5.5C5.36739 7 5.24021 7.05268 5.14645 7.14645C5.05268 7.24021 5 7.36739 5 7.5C5 7.63261 5.05268 7.75979 5.14645 7.85355C5.24021 7.94732 5.36739 8 5.5 8H10C10.1326 8 10.2598 7.94732 10.3536 7.85355C10.4473 7.75979 10.5 7.63261 10.5 7.5ZM10.5 5.5C10.5 5.36739 10.4473 5.24021 10.3536 5.14645C10.2598 5.05268 10.1326 5 10 5H5.5C5.36739 5 5.24021 5.05268 5.14645 5.14645C5.05268 5.24021 5 5.36739 5 5.5C5 5.63261 5.05268 5.75979 5.14645 5.85355C5.24021 5.94732 5.36739 6 5.5 6H10C10.1326 6 10.2598 5.94732 10.3536 5.85355C10.4473 5.75979 10.5 5.63261 10.5 5.5Z" fill="#3C07B6"/>
+                                    </svg>
+                                </a>
+                                <a th:if="${model.status == 4}" th:attr="onclick=|updateStatus('${model.id}', '${currentPage}', '${pageSize}', 5)|" title="Deloying" class="btn">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M12.9725 1.34033C13.188 1.34033 13.3943 1.43406 13.5349 1.58403C13.6848 1.72463 13.7692 1.93084 13.7692 2.14642V6.02692H12.1664V2.14642C12.1664 1.93084 12.2507 1.72463 12.4007 1.58403C12.5413 1.43406 12.7475 1.34033 12.9725 1.34033ZM2.39016 7.7797C2.99941 7.7797 3.48682 8.27648 3.48682 8.87636C3.48682 9.48562 2.99941 9.97302 2.39016 9.97302C1.79028 9.97302 1.2935 9.48562 1.2935 8.87636C1.2935 8.27648 1.79028 7.7797 2.39016 7.7797ZM0.215583 6.46746C0.0937317 6.46746 0 6.56119 0 6.68304V11.0697C0 11.1915 0.0937317 11.2853 0.215583 11.2853H1.82777V12.0257C1.82777 12.1476 1.9215 12.2413 2.04335 12.2413H3.9461C4.06796 12.2413 4.17106 12.1476 4.17106 12.0257V11.2853H11.8289V12.0257C11.8289 12.1476 11.9227 12.2413 12.0445 12.2413H13.9473C14.0691 12.2413 14.1722 12.1476 14.1722 12.0257V11.2853H15.775C15.8969 11.2853 16 11.1915 16 11.0697V6.68304C16 6.56119 15.8969 6.46746 15.775 6.46746C10.8822 6.46746 5.11775 6.46746 0.215583 6.46746ZM5.22086 7.7797C5.83011 7.7797 6.31752 8.27648 6.31752 8.87636C6.31752 9.48562 5.83011 9.97302 5.22086 9.97302C4.62097 9.97302 4.12419 9.48562 4.12419 8.87636C4.12419 8.27648 4.62097 7.7797 5.22086 7.7797ZM9.7106 8.87636C9.7106 8.75451 9.81371 8.66078 9.93556 8.66078H11.5759C11.6977 8.66078 11.7914 8.75451 11.7914 8.87636C11.7914 8.99821 11.6977 9.10132 11.5759 9.10132H9.93556C9.81371 9.10132 9.7106 8.99821 9.7106 8.87636ZM12.6257 8.87636C12.6257 8.75451 12.7194 8.66078 12.8412 8.66078H14.4815C14.6034 8.66078 14.7065 8.75451 14.7065 8.87636C14.7065 8.99821 14.6034 9.10132 14.4815 9.10132H12.8412C12.7194 9.10132 12.6257 8.99821 12.6257 8.87636ZM7.99531 4.33975C8.39836 4.33975 8.72642 4.66781 8.72642 5.07085C8.72642 5.4739 8.39836 5.80196 7.99531 5.80196C7.59227 5.80196 7.26421 5.4739 7.26421 5.07085C7.26421 4.66781 7.59227 4.33975 7.99531 4.33975ZM6.98301 3.92733C6.89865 4.01169 6.89865 4.15228 6.98301 4.23664C7.06737 4.321 7.20797 4.321 7.29233 4.23664C7.48916 4.0398 7.74224 3.9367 7.99531 3.9367C8.25776 3.9367 8.51084 4.0398 8.70767 4.23664C8.79203 4.321 8.93263 4.321 9.01699 4.23664C9.10135 4.15228 9.10135 4.01169 9.01699 3.92733C8.73579 3.64613 8.37024 3.50553 7.99531 3.50553C7.62976 3.50553 7.26421 3.64613 6.98301 3.92733ZM6.33626 3.20559C6.2519 3.28995 6.2519 3.43055 6.33626 3.51491C6.42062 3.59927 6.56122 3.59927 6.64558 3.51491C7.00176 3.15873 7.48916 2.95252 7.99531 2.95252C8.49209 2.95252 8.9795 3.13998 9.35442 3.51491C9.43878 3.59927 9.57938 3.59927 9.66374 3.51491C9.7481 3.43055 9.7481 3.28995 9.66374 3.20559C9.2232 2.76505 8.62332 2.52135 7.99531 2.52135C7.36731 2.52135 6.7768 2.76505 6.33626 3.20559ZM5.83948 2.49323C5.75513 2.57759 5.75513 2.71819 5.83948 2.80255C5.93322 2.8869 6.06444 2.8869 6.1488 2.80255C6.66432 2.28702 7.32982 2.03395 7.99531 2.03395C8.67018 2.03395 9.33568 2.28702 9.84183 2.80255C9.92619 2.8869 10.0668 2.8869 10.1511 2.80255C10.2355 2.71819 10.2355 2.57759 10.1511 2.49323C9.56063 1.89335 8.78266 1.59341 7.99531 1.59341C7.21734 1.59341 6.43937 1.89335 5.83948 2.49323ZM3.02753 1.34033C3.25249 1.34033 3.44933 1.43406 3.5993 1.58403C3.73989 1.72463 3.83363 1.93084 3.83363 2.14642V6.02692H2.22144V2.14642C2.22144 1.93084 2.31517 1.72463 2.45577 1.58403C2.60574 1.43406 2.80258 1.34033 3.02753 1.34033Z" fill="#561415"/>
+                                    </svg>
+                                </a>
+                                <a th:if="${model.status == 5}" th:attr="onclick=|updateStatus('${model.id}', '${currentPage}', '${pageSize}', 6)|" title="Success" class="btn">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M14.6666 7.99992C14.6666 11.6818 11.6819 14.6666 7.99998 14.6666C4.31808 14.6666 1.33331 11.6818 1.33331 7.99992C1.33331 4.31802 4.31808 1.33325 7.99998 1.33325C11.6819 1.33325 14.6666 4.31802 14.6666 7.99992ZM11.1477 6.29923C11.3335 6.0949 11.3184 5.77868 11.1141 5.59292C10.9098 5.40717 10.5936 5.42223 10.4078 5.62656L7.07963 9.28755L5.59713 7.60739C5.41443 7.40033 5.09847 7.38058 4.8914 7.56328C4.68434 7.74599 4.66459 8.06195 4.8473 8.26901L6.58971 10.2437C6.84518 10.5333 7.29556 10.5366 7.5553 10.2509L11.1477 6.29923Z" fill="#0CAE00"/>
+                                    </svg>
+                                </a>
+                                <a th:if="${model.status != 6 && model.status != 7}" th:attr="onclick=|updateStatus('${model.id}', '${currentPage}', '${pageSize}', 7)|" title="Cancel" class="btn">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M14.6666 7.99992C14.6666 11.6818 11.6819 14.6666 7.99998 14.6666C4.31808 14.6666 1.33331 11.6818 1.33331 7.99992C1.33331 4.31802 4.31808 1.33325 7.99998 1.33325C11.6819 1.33325 14.6666 4.31802 14.6666 7.99992ZM6.35353 5.64636C6.15827 5.4511 5.84169 5.4511 5.64643 5.64636C5.45116 5.84163 5.45116 6.15821 5.64643 6.35347L7.29287 7.99992L5.64643 9.64636C5.45116 9.84163 5.45116 10.1582 5.64643 10.3535C5.84169 10.5487 6.15827 10.5487 6.35353 10.3535L7.99998 8.70703L9.64643 10.3535C9.84169 10.5487 10.1583 10.5487 10.3535 10.3535C10.5488 10.1582 10.5488 9.84163 10.3535 9.64636L8.70709 7.99992L10.3535 6.35347C10.5488 6.15821 10.5488 5.84163 10.3535 5.64636C10.1583 5.4511 9.84169 5.4511 9.64643 5.64636L7.99998 7.29281L6.35353 5.64636Z" fill="#F41418"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div th:with="paramNames=${@thymeleaf.arrays('orderCode', orderCode, 'packageCode', packageCode, 'isdner', isdner, 'isdnee', isdnee, 'name', name, 'proviceId', proviceId, 'branchIdSS', branchId, 'dateRanger', dateRanger, 'status', status)}">
+                    <div th:insert="common :: table-paging-hieutm(${currentPage}, ${pageSize}, ${totalPages}, ${totalItems}, ${paramNames})"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="update-status-form">
+        <div class="modal-dialog modal-xl">
+            <form id="form" th:action="@{/selfcare/ftth-register/update-status}" class="create-role" method="get" th:object="${model}" enctype="multipart/form-data">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" th:text="'Edit register request'"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Status</p>
+                        <div style="display: flex;">From: <div id="from" style="margin-left: 5px; margin-right: 15px;"></div> To: <div id="to" style="margin-left: 5px;"></div></div>
+                        <input type="hidden" id="formId" name="id">
+                        <input type="hidden" id="formPage" name="page">
+                        <input type="hidden" id="formPageSize" name="pageSize">
+                        <input type="hidden" id="formStatus" name="status">
+
+                        <input type="hidden" id="orderCodeSForm" name="orderCodeS">
+                        <input type="hidden" id="packageCodeSForm" name="packageCodeS">
+                        <input type="hidden" id="isdnerSForm" name="isdnerS">
+                        <input type="hidden" id="isdneeSForm" name="isdneeS">
+                        <input type="hidden" id="nameSForm" name="nameS">
+                        <input type="hidden" id="proviceIdSForm" name="proviceIdS">
+                        <input type="hidden" id="branchIdSForm" name="branchIdS">
+                        <input type="hidden" id="dateRangerSForm" name="dateRangerS">
+                        <input type="hidden" id="statusSForm" name="statusS">
+
+                        <div class="row">
+                            <div class="mt-3" th:insert="component :: textarea-v1(#{customerFeedback}, 'customerFeedback', '', 4, 0, 255, false, false)" id="customerFeedbackDiv"></div>
+                            <div class="mt-3" th:insert="component :: textarea-v1(#{reasonCanNotContactSuccess}, 'reasonCanNotContactSuccess', '', 4, 0, 255, false, false)" id="reasonCanNotContactSuccessDiv"></div>
+                            <div class="mt-3" th:insert="component :: textarea-v1(#{remarkAdditionInfo}, 'remarkAdditionInfo', '', 4, 0, 500, false, false)" id="remarkAdditionInfoDiv"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-bs-dismiss="modal" style="background-color: #DFDFDF">Close</button>
+                        <button id="apply" type="submit" class="btn" th:text="#{apply}" style="background-color: #FC6D05; color: #FFFFFF"></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="update-branch-form">
+        <div class="modal-dialog modal-lg">
+            <form id="form2" th:action="@{/selfcare/ftth-register/update-branch}" class="create-role" method="get" th:object="${model}" enctype="multipart/form-data">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" th:text="'Order Delivery'"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div style="border: 1px solid #DFDFDF; border-radius: 12px; padding: 15px;">
+                            <div class=""><span style="font-weight: bold;" id="orderCodeForm">10006 </span><span style="margin-left: 10px;">New</span></div>
+                            <div class="row mt-2">
+                                <div class="col-3" style="display: flex; flex-direction: column;">
+                                    <span><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g clip-path="url(#clip0_2020_60601)">
+                                            <path d="M11.8703 2.33333C13.2124 2.33333 14.3004 3.42153 14.3004 4.76389C14.3004 6.10625 13.2124 7.19444 11.8703 7.19444C11.7439 7.19444 11.6198 7.1848 11.4986 7.1662M12.5834 9.23919C12.8068 9.24778 13.0321 9.26041 13.2612 9.27707C14.9223 9.39787 16.1981 10.7456 16.436 12.3943L16.4823 12.7149C16.6194 13.6651 15.9594 14.5521 15.005 14.6544C14.9001 14.6657 14.7963 14.6764 14.6934 14.6866M9.97168 4.41667C9.97168 6.0275 8.66606 7.33333 7.0555 7.33333C5.44494 7.33333 4.13932 6.0275 4.13932 4.41667C4.13932 2.80584 5.44494 1.5 7.0555 1.5C8.66606 1.5 9.97168 2.80584 9.97168 4.41667ZM3.29885 16.2831C5.99081 16.5703 8.12907 16.5736 10.8171 16.2853C11.9624 16.1625 12.7543 15.0982 12.5898 13.9579L12.5343 13.5731C12.2488 11.5947 10.7179 9.97744 8.72456 9.83248C7.58742 9.74979 6.52763 9.74992 5.38831 9.83294C3.39421 9.97824 1.86219 11.5956 1.57657 13.5748L1.52193 13.9535C1.35713 15.0955 2.15173 16.1607 3.29885 16.2831Z" stroke="#282930" stroke-width="1.125" stroke-linecap="round"/>
+                                        </g>
+                                        <defs>
+                                            <clipPath id="clip0_2020_60601">
+                                                <rect width="18" height="18" fill="white"/>
+                                            </clipPath>
+                                        </defs>
+                                    </svg>
+                                    Customer</span>
+                                    <span id="customerName"></span>
+                                    <span id="customerPhone"></span>
+                                </div>
+                                <div class="col-3" style="display: flex; flex-direction: column;">
+                                    <span><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12.7126 13.2992C13.4468 13.5614 13.9469 13.8955 14.1494 14.2592C14.352 14.6229 14.248 14.9999 13.8507 15.3425C13.4533 15.6851 12.7804 15.978 11.9171 16.184C11.0537 16.39 10.0387 16.5 9.00031 16.5C7.96195 16.5 6.94692 16.39 6.08356 16.184C5.22021 15.978 4.5473 15.6851 4.14994 15.3425C3.75258 14.9999 3.64861 14.6229 3.85119 14.2592C4.05376 13.8955 4.55377 13.5614 5.288 13.2992M14.2503 6.6C14.2503 9.41665 9.00031 14.25 9.00031 14.25C9.00031 14.25 3.75031 9.41665 3.75031 6.6C3.75031 3.78335 6.10081 1.5 9.00031 1.5C11.8998 1.5 14.2503 3.78335 14.2503 6.6ZM10.9691 6.6C10.9691 7.65624 10.0876 8.5125 9.00031 8.5125C7.913 8.5125 7.03156 7.65624 7.03156 6.6C7.03156 5.54376 7.913 4.6875 9.00031 4.6875C10.0876 4.6875 10.9691 5.54376 10.9691 6.6Z" stroke="#282930" stroke-width="1.125" stroke-linecap="round"/>
+                                    </svg>
+                                    Address
+                                    </span>
+                                    <span id="customerAddress"></span>
+                                </div>
+                                <div class="col-3" style="display: flex; flex-direction: column;">
+                                    <span><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1.5 6.31618C1.5 6.31618 3.9969 3.375 9 3.375C14.0031 3.375 16.5 6.31618 16.5 6.31618M3.84375 9.25735C3.84375 9.25735 5.91986 7.29657 9 7.29657C12.0801 7.29657 14.1562 9.25735 14.1562 9.25735M6.1875 11.7083C6.1875 11.7083 7.35937 10.7279 9 10.7279C10.6406 10.7279 11.8125 11.7083 11.8125 11.7083M9.00834 14.625H9.00001" stroke="#282930" stroke-width="1.125" stroke-linecap="round"/>
+                                    </svg>
+                                    Package
+                                    </span>
+                                    <span id="customerPackage"></span>
+                                </div>
+                                <div class="col-3" style="display: flex; flex-direction: column;">
+                                    <span><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M3.47852 16.2485L3.21799 16.747H3.21799L3.47852 16.2485ZM2.49524 15.24L2.999 14.9897L2.999 14.9897L2.49524 15.24ZM14.5215 16.2485L14.261 15.7499L14.5215 16.2485ZM15.5048 15.24L15.001 14.9897L15.001 14.9897L15.5048 15.24ZM14.5215 2.90537L14.261 3.4039L14.261 3.4039L14.5215 2.90537ZM15.5048 3.91387L16.0085 3.66361V3.66361L15.5048 3.91387ZM3.47852 2.90537L3.73905 3.4039H3.73905L3.47852 2.90537ZM2.49524 3.91387L2.999 4.16413L2.49524 3.91387ZM6.5625 1.5C6.5625 1.18934 6.31066 0.9375 6 0.9375C5.68934 0.9375 5.4375 1.18934 5.4375 1.5H6.5625ZM5.4375 3.80769C5.4375 4.11835 5.68934 4.37019 6 4.37019C6.31066 4.37019 6.5625 4.11835 6.5625 3.80769H5.4375ZM12.5625 1.5C12.5625 1.18934 12.3107 0.9375 12 0.9375C11.6893 0.9375 11.4375 1.18934 11.4375 1.5H12.5625ZM11.4375 3.80769C11.4375 4.11835 11.6893 4.37019 12 4.37019C12.3107 4.37019 12.5625 4.11835 12.5625 3.80769H11.4375ZM5.85 2.65385V3.21635H12.15V2.65385V2.09135H5.85V2.65385ZM12.15 16.5V15.9375H5.85V16.5V17.0625H12.15V16.5ZM2.25 12.8077H2.8125V6.5H2.25H1.6875V12.8077H2.25ZM2.25 6.5H2.8125V6.34615H2.25H1.6875V6.5H2.25ZM15.75 6.34615H15.1875V6.5H15.75H16.3125V6.34615H15.75ZM15.75 6.5H15.1875V12.8077H15.75H16.3125V6.5H15.75ZM2.25 6.5V7.0625H15.75V6.5V5.9375H2.25V6.5ZM5.85 16.5V15.9375C5.21042 15.9375 4.76543 15.937 4.41918 15.908C4.07992 15.8796 3.88594 15.8267 3.73905 15.7499L3.47852 16.2485L3.21799 16.747C3.5524 16.9218 3.91411 16.9946 4.32523 17.0291C4.72936 17.063 5.22946 17.0625 5.85 17.0625V16.5ZM2.25 12.8077H1.6875C1.6875 13.4449 1.68708 13.9557 1.71993 14.368C1.75327 14.7865 1.82353 15.1522 1.99147 15.4902L2.49524 15.24L2.999 14.9897C2.92171 14.8341 2.86935 14.6298 2.84138 14.2787C2.81292 13.9214 2.8125 13.463 2.8125 12.8077H2.25ZM3.47852 16.2485L3.73905 15.7499C3.42262 15.5846 3.16273 15.3193 2.999 14.9897L2.49524 15.24L1.99147 15.4902C2.25918 16.0291 2.68769 16.4699 3.21799 16.747L3.47852 16.2485ZM12.15 16.5V17.0625C12.7705 17.0625 13.2706 17.063 13.6748 17.0291C14.0859 16.9946 14.4476 16.9218 14.782 16.747L14.5215 16.2485L14.261 15.7499C14.1141 15.8267 13.9201 15.8796 13.5808 15.908C13.2346 15.937 12.7896 15.9375 12.15 15.9375V16.5ZM15.75 12.8077H15.1875C15.1875 13.463 15.1871 13.9214 15.1586 14.2787C15.1307 14.6298 15.0783 14.8341 15.001 14.9897L15.5048 15.24L16.0085 15.4902C16.1765 15.1522 16.2467 14.7865 16.2801 14.368C16.3129 13.9557 16.3125 13.4449 16.3125 12.8077H15.75ZM14.5215 16.2485L14.782 16.747C15.3123 16.4699 15.7408 16.0291 16.0085 15.4902L15.5048 15.24L15.001 14.9897C14.8373 15.3193 14.5774 15.5846 14.261 15.7499L14.5215 16.2485ZM12.15 2.65385V3.21635C12.7896 3.21635 13.2346 3.21681 13.5808 3.24582C13.9201 3.27425 14.1141 3.32713 14.261 3.4039L14.5215 2.90537L14.782 2.40684C14.4476 2.23208 14.0859 2.1592 13.6748 2.12475C13.2706 2.09089 12.7705 2.09135 12.15 2.09135V2.65385ZM15.75 6.34615H16.3125C16.3125 5.70899 16.3129 5.19813 16.2801 4.7858C16.2467 4.36731 16.1765 4.00167 16.0085 3.66361L15.5048 3.91387L15.001 4.16413C15.0783 4.31971 15.1307 4.524 15.1586 4.87513C15.1871 5.23243 15.1875 5.69089 15.1875 6.34615H15.75ZM14.5215 2.90537L14.261 3.4039C14.5774 3.56926 14.8373 3.83455 15.001 4.16413L15.5048 3.91387L16.0085 3.66361C15.7408 3.12474 15.3123 2.68397 14.782 2.40684L14.5215 2.90537ZM5.85 2.65385V2.09135C5.22946 2.09135 4.72936 2.09089 4.32523 2.12475C3.91411 2.1592 3.5524 2.23208 3.21799 2.40684L3.47852 2.90537L3.73905 3.4039C3.88594 3.32713 4.07992 3.27425 4.41918 3.24582C4.76543 3.21681 5.21042 3.21635 5.85 3.21635V2.65385ZM2.25 6.34615H2.8125C2.8125 5.69089 2.81292 5.23243 2.84138 4.87513C2.86935 4.524 2.92171 4.31971 2.999 4.16413L2.49524 3.91387L1.99147 3.66361C1.82353 4.00167 1.75327 4.36731 1.71993 4.7858C1.68708 5.19813 1.6875 5.70899 1.6875 6.34615H2.25ZM3.47852 2.90537L3.21799 2.40684C2.68769 2.68397 2.25918 3.12474 1.99147 3.66361L2.49524 3.91387L2.999 4.16413C3.16273 3.83455 3.42262 3.56926 3.73905 3.4039L3.47852 2.90537ZM6 1.5H5.4375V3.80769H6H6.5625V1.5H6ZM12 1.5H11.4375V3.80769H12H12.5625V1.5H12Z" fill="#282930"/>
+                                        <path d="M6 9.36523C5.58579 9.36523 5.25 9.70102 5.25 10.1152C5.25 10.5294 5.58579 10.8652 6 10.8652V9.36523ZM6.0075 10.8652C6.42171 10.8652 6.7575 10.5294 6.7575 10.1152C6.7575 9.70102 6.42171 9.36523 6.0075 9.36523V10.8652ZM6 12.0575C5.58579 12.0575 5.25 12.3933 5.25 12.8075C5.25 13.2218 5.58579 13.5575 6 13.5575V12.0575ZM6.0075 13.5575C6.42171 13.5575 6.7575 13.2218 6.7575 12.8075C6.7575 12.3933 6.42171 12.0575 6.0075 12.0575V13.5575ZM9 9.36523C8.58579 9.36523 8.25 9.70102 8.25 10.1152C8.25 10.5294 8.58579 10.8652 9 10.8652V9.36523ZM9.0075 10.8652C9.42171 10.8652 9.7575 10.5294 9.7575 10.1152C9.7575 9.70102 9.42171 9.36523 9.0075 9.36523V10.8652ZM9 12.0575C8.58579 12.0575 8.25 12.3933 8.25 12.8075C8.25 13.2218 8.58579 13.5575 9 13.5575V12.0575ZM9.0075 13.5575C9.42171 13.5575 9.7575 13.2218 9.7575 12.8075C9.7575 12.3933 9.42171 12.0575 9.0075 12.0575V13.5575ZM12 9.36523C11.5858 9.36523 11.25 9.70102 11.25 10.1152C11.25 10.5294 11.5858 10.8652 12 10.8652V9.36523ZM12.0075 10.8652C12.4217 10.8652 12.7575 10.5294 12.7575 10.1152C12.7575 9.70102 12.4217 9.36523 12.0075 9.36523V10.8652ZM12 12.0575C11.5858 12.0575 11.25 12.3933 11.25 12.8075C11.25 13.2218 11.5858 13.5575 12 13.5575V12.0575ZM12.0075 13.5575C12.4217 13.5575 12.7575 13.2218 12.7575 12.8075C12.7575 12.3933 12.4217 12.0575 12.0075 12.0575V13.5575ZM6 10.1152V10.8652H6.0075V10.1152V9.36523H6V10.1152ZM6 12.8075V13.5575H6.0075V12.8075V12.0575H6V12.8075ZM9 10.1152V10.8652H9.0075V10.1152V9.36523H9V10.1152ZM9 12.8075V13.5575H9.0075V12.8075V12.0575H9V12.8075ZM12 10.1152V10.8652H12.0075V10.1152V9.36523H12V10.1152ZM12 12.8075V13.5575H12.0075V12.8075V12.0575H12V12.8075Z" fill="#282930"/>
+                                    </svg>
+                                    Register time
+                                    </span>
+                                    <span id="customerRegisterTime"></span>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center mt-2" style="background-color: #F479201A; border-radius: 8px; padding: 5px;">
+                                <div>
+                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10.0003 8.16285V12.2173M10.009 14.2446H10.0003M9.62292 3.12456L1.72194 16.4803C1.56207 16.7506 1.77016 17.0827 2.09935 17.0827H17.9013C18.2305 17.0827 18.4386 16.7506 18.2787 16.4803L10.3777 3.12456C10.2132 2.8465 9.78741 2.8465 9.62292 3.12456Z" stroke="#F47920" stroke-width="1.25" stroke-linecap="round"/>
+                                    </svg>
+                                </div>
+                                <div style="color: #F47920; padding-left: 5px;">Note: </div>
+                                <div style="color: #F47920; padding-left: 5px;" id="customerNote"></div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="formId2" name="id">
+                        <input type="hidden" id="formPage2" name="page">
+                        <input type="hidden" id="formPageSize2" name="pageSize">
+
+                        <input type="hidden" id="orderCodeSForm2" name="orderCodeS">
+                        <input type="hidden" id="packageCodeSForm2" name="packageCodeS">
+                        <input type="hidden" id="isdnerSForm2" name="isdnerS">
+                        <input type="hidden" id="isdneeSForm2" name="isdneeS">
+                        <input type="hidden" id="nameSForm2" name="nameS">
+                        <input type="hidden" id="proviceIdSForm2" name="proviceIdS">
+                        <input type="hidden" id="branchIdSForm2" name="branchIdS">
+                        <input type="hidden" id="dateRangerSForm2" name="dateRangerS">
+                        <input type="hidden" id="statusSForm2" name="statusS">
+
+                        <div class="row">
+                            <div class="mt-3" th:insert="component :: select2-v2('GET', #{branch}, 'branchId', '', '/selfcare/ftth-register/ajax-search-branch', 'Choose branch', '', true, false, 0, null)"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-bs-dismiss="modal" style="background-color: #DFDFDF">Close</button>
+                        <button id="apply2" type="submit" class="btn" th:text="#{apply}" style="background-color: #FC6D05; color: #FFFFFF"></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <modal-detail th:replace="buu-component :: modal-detail"></modal-detail>
+</div>
+</body>
+<script layout:fragment="content_page_script" th:inline="javascript">
+    function updateStatus(id, page, pageSize, status) {
+        if(page == null || page == "" || page == "null")
+            page = 1;
+        if(pageSize == null || pageSize == "" || pageSize == "null")
+            pageSize = 10;
+
+        clearForm();
+        $('#formId').val(id);
+        $('#formPage').val(page);
+        $('#formPageSize').val(pageSize);
+        $('#formStatus').val(status);
+
+        if(status == 1) {
+            $('#reasonCanNotContactSuccessDiv').show();
+        } else if(status == 2) {
+            $('#reasonCanNotContactSuccessDiv').show();
+            $('#from').text('Call');
+            $('#to').text('Unreachable');
+        } else if(status == 3) {
+            $('#customerFeedbackDiv').show();
+            $('#from').text('Call');
+            $('#to').text('Survey');
+        } else if(status == 4) {
+            $('#from').text('Survey');
+            $('#to').text('Sign contract');
+        } else if(status == 5) {
+            $('#from').text('Sign contract');
+            $('#to').text('Deploy');
+        } else if(status == 6) {
+            $('#remarkAdditionInfoDiv').show();
+            $('#from').text('Deploy');
+            $('#to').text('Success');
+        } else if(status == 7) {
+            $('#remarkAdditionInfoDiv').show();
+            $('#to').text('Cancel');
+        }
+
+        $('#orderCodeSForm').val([[${orderCode}]]);
+        $('#packageCodeSForm').val([[${packageCode}]]);
+        $('#isdnerSForm').val([[${isdner}]]);
+        $('#isdneeSForm').val([[${isdnee}]]);
+        $('#nameSForm').val([[${name}]]);
+        $('#proviceIdSForm').val([[${proviceId}]]);
+        $('#branchSForm').val([[${branchId}]]);
+        $('#dateRangerSForm').val([[${dateRanger}]]);
+        $('#statusSForm').val([[${status}]]);
+
+        $("#update-status-form").modal('show');
+    }
+    function updateBranch(id, page, pageSize, customerName, customerPhone, customerAddress, customerPackage, customerRegisterTime, customerNote, customerOrderCode) {
+        if(page == null || page == "" || page == "null")
+            page = 1;
+        if(pageSize == null || pageSize == "" || pageSize == "null")
+            pageSize = 10;
+
+        $('#formId2').val(id);
+        $('#formPage2').val(page);
+        $('#formPageSize2').val(pageSize);
+
+        $('#orderCodeForm').text(customerOrderCode);
+        $('#customerName').text(customerName);
+        $('#customerPhone').text(customerPhone);
+        $('#customerAddress').text(customerAddress);
+        $('#customerPackage').text(customerPackage);
+        $('#customerRegisterTime').text(customerRegisterTime);
+        $('#customerNote').text(customerNote);
+
+        $('#orderCodeSForm2').val([[${orderCode}]]);
+        $('#packageCodeSForm2').val([[${packageCode}]]);
+        $('#isdnerSForm2').val([[${isdner}]]);
+        $('#isdneeSForm2').val([[${isdnee}]]);
+        $('#nameSForm2').val([[${name}]]);
+        $('#proviceIdSForm2').val([[${proviceId}]]);
+        $('#branchIdSForm2').val([[${branchId}]]);
+        $('#dateRangerSForm2').val([[${dateRanger}]]);
+        $('#statusSForm2').val([[${status}]]);
+
+        let myModal = new bootstrap.Modal(document.getElementById('update-branch-form'), {
+            focus: false
+        });
+
+        myModal.show();
+    }
+
+    function seeDetail(id) {
+        toastLoading();
+        $.ajax({
+            url: [[@{/selfcare/ftth-register/detail}]],
+        type: 'GET',
+            data: {id},
+        success: (data) => {
+            Swal.close();
+            $('#body-detail').html(data);
+            $('#modal-detail').modal("show");
+        },
+            error: (err) => {
+            console.error(err);
+            toastError("An error has occurred!")
+        }
+    });
+    }
+
+    function clearForm() {
+        $('#formId').val('');
+        $('#formPage').val('');
+        $('#formPageSize').val('');
+        $('#formStatus').val('');
+        $('#customerFeedback').val('He needs internet');
+        $('#reasonCanNotContactSuccess').val('The customer never picked up the phone');
+        $('#remarkAdditionInfo').val('');
+        $('#customerFeedbackDiv').hide();
+        $('#reasonCanNotContactSuccessDiv').hide();
+        $('#remarkAdditionInfoDiv').hide();
+    }
+
+    function submitForm() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', [[${@environment.getProperty('server.servlet.context-path')}]] + '/selfcare/ftth-register/export', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.responseType = 'blob';
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var blob = xhr.response;
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = 'exported-file.xlsx'; // Tên tệp Excel tải xuống
+                link.click();
+            }
+        };
+
+        const serializeForm = form =>
+            Array.from(new FormData(form), field => field.map(encodeURIComponent).join('=')).join('&');
+
+        <!--        console.log("Data: " + serializeForm(document.querySelector('#form-search')));-->
+        xhr.send(serializeForm(document.querySelector('#form-search')));
+    }
+</script>
+</html>

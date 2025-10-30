@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{cms_layout_1.html}">
+<head>
+</head>
+<body id="page-top">
+<div class="content" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form th:action="@{'/loyalty/loyalty-souvenir-order/index'}" method="get">
+                    <div class="row">
+                        <div class="col-3" th:insert="component :: input-text-v3(#{isdn}, 'isdn', *{isdn}, 0, 8, false, false, false)"></div>
+                        <div class="col-3" th:insert="component :: input-text-v3(#{orderCode}, 'orderCode', *{orderCode}, 0, 50, false, false, false)"></div>
+                        <div class="col-3" th:insert="component :: input-text-v3(#{name}, 'title', *{name}, 0, 255, false, false, false)"></div>
+                        <div class="col-3" th:with="options=${@thymeleaf.arrays('', 'All', '1', 'Pending', '2', 'Processing', '3', 'Valid', '4', 'Received', '5', 'Cancel')}">
+                            <div th:replace="component :: select-default-v2(#{status}, 'status', *{status}, false, false, ${options})"></div>
+                        </div>
+
+                        <div th:class="'col-12 text-center pt-3'" class="col-12 text-center pt-3">
+                            <button type="submit" style="cursor: pointer;" class="btn btn-primary mx-2">
+                                <i class="fas fa-search"></i><span class="px-2" th:text="#{search}"></span>
+                            </button>
+                            <button id="reset" type="button" value="Reset" style="cursor: pointer;" class="btn btn-primary mx-2">
+                                <i class="fa fa-refresh"></i><span class="px-2" th:text="#{reset}"></span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body table-responsive">
+                <table class="table custom-table table-bordered">
+                    <thead class="thead-light">
+                    <tr>
+                        <th scope="col" th:text="#{no}" class="text-center"></th>
+                        <th scope="col" th:text="#{image}" class="text-center"></th>
+                        <th scope="col" th:text="#{name}" class="text-center"></th>
+                        <th scope="col" th:text="#{orderCode}" class="text-center"></th>
+                        <th scope="col" th:text="#{isdn}" class="text-center"></th>
+                        <th scope="col" th:text="#{status}" class="text-center"></th>
+                        <th scope="col" th:text="#{showroomName}" class="text-center"></th>
+                        <!--                        <th scope="col" th:text="#{startDate}" class="text-center"></th>-->
+                        <!--                        <th scope="col" th:text="#{dateExpired}" class="text-center"></th>-->
+                        <th scope="col" th:text="#{createdAt}" class="text-center"></th>
+                        <!--                        <th scope="col" th:text="#{processDate}" class="text-center"></th>-->
+                        <!--                        <th scope="col" th:text="#{confirmDate}" class="text-center"></th>-->
+                        <!--                        <th scope="col" th:text="#{receiveDate}" class="text-center"></th>-->
+                        <!--                        <th scope="col" th:text="#{cancelDate}" class="text-center"></th>-->
+                        <th scope="col" th:text="#{action}" class="text-center"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="model, item:${models}">
+                        <td class="text-center" th:text="${item.index + pageSize*currentPage - (pageSize - 1)}">1</td>
+                        <td class="text-center">
+                            <div th:if="${model.iconUrl}" class="dropdown">
+                                <img class="dropdown-toggle" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                     style="height: 35px;width:35px" th:src="${@thymeleaf.mediaUrl(model.iconUrl)}">
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                    <img style="height: 200px;width:200px" th:src="${@thymeleaf.mediaUrl(model.iconUrl)}">
+                                </div>
+                            </div>
+                        </td>
+                        <td th:text="${model.title}"></td>
+                        <td th:text="${model.orderCode}"></td>
+                        <td th:text="${model.isdn}"></td>
+                        <td>
+                            <span th:if="${model.status == 1}" th:text="'Pending'"></span>
+                            <span th:if="${model.status == 2}" th:text="'Processing'"></span>
+                            <span th:if="${model.status == 3}" th:text="'Valid'"></span>
+                            <span th:if="${model.status == 4}" th:text="'Received'"></span>
+                            <span th:if="${model.status == 5}" th:text="'Cancel'"></span>
+                        </td>
+                        <td th:text="${model.showroomName}"></td>
+                        <!--                        <td th:text="${#dates.format(model.startDate, 'yyyy-MM-dd HH:mm:ss')}" style="white-space: nowrap;" class="text-center"></td>-->
+                        <!--                        <td th:text="${#dates.format(model.dateExpired, 'yyyy-MM-dd HH:mm:ss')}" style="white-space: nowrap;" class="text-center"></td>-->
+                        <td th:text="${#dates.format(model.createdAt, 'yyyy-MM-dd HH:mm:ss')}" style="white-space: nowrap;" class="text-center"></td>
+                        <!--                        <td th:text="${#dates.format(model.processDate, 'yyyy-MM-dd HH:mm:ss')}" style="white-space: nowrap;" class="text-center"></td>-->
+                        <!--                        <td th:text="${#dates.format(model.confirmDate, 'yyyy-MM-dd HH:mm:ss')}" style="white-space: nowrap;" class="text-center"></td>-->
+                        <!--                        <td th:text="${#dates.format(model.receiveDate, 'yyyy-MM-dd HH:mm:ss')}" style="white-space: nowrap;" class="text-center"></td>-->
+                        <!--                        <td th:text="${#dates.format(model.cancelDate, 'yyyy-MM-dd HH:mm:ss')}" style="white-space: nowrap;" class="text-center"></td>-->
+                        <td class="text-center" style="white-space: nowrap;">
+                            <div class="d-flex justify-content-center align-items-center flex-wrap" style="gap: 5px;">
+                                <a th:if="${model.status == 1}" th:attr="onclick=|updateStatus('${model.id}', '${currentPage}', '${pageSize}', 2)|" title="Process" class="btn"><i class="fas fa-microchip" style="color: #FFD43B;"></i></a>
+                                <a th:if="${model.status == 2}" th:attr="onclick=|updateStatus('${model.id}', '${currentPage}', '${pageSize}', 3)|" title="Valid" class="btn"><i class="fas fa-vote-yea" style="color: #63E6BE;"></i></a>
+                                <a th:if="${model.status == 3}" th:attr="onclick=|updateStatus('${model.id}', '${currentPage}', '${pageSize}', 4)|" title="Received" class="btn"><i class="fas fa-receipt" style="color: #74C0FC;"></i></a>
+                                <a th:if="${model.status != 4 && model.status != 5}" th:attr="onclick=|updateStatus('${model.id}', '${currentPage}', '${pageSize}', 5)|" title="Cancel" class="btn"><i class="fas fa-window-close" style="color: #f95a48;"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div th:with="paramNames=${@thymeleaf.arrays('isdn', isdn, 'orderCode', orderCode, 'title', name, 'status', status)}">
+                    <div th:insert="common :: table-paging-hieutm(${currentPage}, ${pageSize}, ${totalPages}, ${totalItems}, ${paramNames})"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="delete-modal-sm">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" th:text="'Edit souvenir order'"></h4>
+                </div>
+                <div class="modal-body">
+                    <p>Status</p>
+                    <div style="display: flex;">From: <div id="from" style="margin-left: 5px; margin-right: 15px; border: 1px solid black; border-radius: 5px; padding: 2px;"></div> To: <div id="to" style="margin-left: 5px; border: 1px solid black; border-radius: 5px; padding: 2px;"></div></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal" style="background-color: #DFDFDF">Close</button>
+                    <button id="apply" type="submit" class="btn" th:text="#{apply}" style="background-color: #FC6D05; color: #FFFFFF"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script layout:fragment="content_page_script" th:inline="javascript">
+    function updateStatus(id, page, pageSize, status) {
+        if(page == null || page == "" || page == "null")
+            page = 1;
+
+        if(status == 2) {
+            $('#reasonCanNotContactSuccessDiv').show();
+            $('#from').text('Pending');
+            $('#to').text('Processing');
+        } else if(status == 3) {
+            $('#customerFeedbackDiv').show();
+            $('#from').text('Processing');
+            $('#to').text('Valid');
+        } else if(status == 4) {
+            $('#from').text('Valid');
+            $('#to').text('Received');
+        } else if(status == 5) {
+            $('#to').text('Cancel');
+        }
+
+        $("#delete-modal-sm").modal('show');
+        $("#apply").click(function() {
+            // console.log([[${@environment.getProperty('server.servlet.context-path')}]] + `/loyalty/loyalty-souvenir-order/update-status/${page}?id=${id}&pageSize=${pageSize}&status=${status}&isdnS=${[[${isdn}]]}&orderCodeS=${[[${orderCode}]]}&titles=${[[${name}]]}&statusS=${[[${status == null ? '' : status}]]}`);
+            window.location.href = [[${@environment.getProperty('server.servlet.context-path')}]] + `/loyalty/loyalty-souvenir-order/update-status/${page}?id=${id}&pageSize=${pageSize}&status=${status}&isdnS=${[[${isdn}]]}&orderCodeS=${[[${orderCode}]]}&titles=${[[${name}]]}&statusS=${[[${status == null ? '' : status}]]}`;
+            $('#delete-modal-sm').modal('hide');
+        });
+    }
+</script>
+</html>

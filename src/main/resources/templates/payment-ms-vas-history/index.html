@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{cms_layout_1.html}">
+<head>
+</head>
+<body id="page-top">
+<div class="content" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form id="form-search" th:action="@{'/selfcare/payment-ms-vas-history/index'}" method="get">
+                    <div class="row">
+                        <div class="col-3" th:insert="component :: input-text-v3(#{isdn}, 'isdn', *{isdn}, 0, 20, false, false, false)"></div>
+                        <div class="col-3" th:insert="component :: input-text-v3(#{serviceCode}, 'serviceCode', *{serviceCode}, 0, 50, false, false, false)"></div>
+                        <div class="col-3" th:with="options=${@thymeleaf.arrays('', 'All', '0', 'Success', '1', 'Fail')}">
+                            <div th:replace="component :: select-default-v2(#{status}, 'status', *{status}, false, false, ${options})"></div>
+                        </div>
+                        <div class="col-3" th:insert="component :: input-text-v3('Url', 'url', *{url}, 0, 100, false, false, false)"></div>
+                        <div class="col-3 mt-3" th:insert="component :: input-date-ranger-v2(#{dateRanger}, 'dateRanger', *{dateRanger}, false, false, 'YYYY-MM-DD', 6, 0)"></div>
+
+                        <div th:class="'col-12 text-center pt-3'" class="col-12 text-center pt-3">
+                            <button type="submit" style="cursor: pointer;" class="btn btn-primary mx-2">
+                                <i class="fas fa-search"></i><span class="px-2" th:text="#{search}"></span>
+                            </button>
+                            <button id="reset" type="button" value="Reset" style="cursor: pointer;" class="btn btn-primary mx-2">
+                                <i class="fa fa-refresh"></i><span class="px-2" th:text="#{reset}"></span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body table-responsive">
+                <table class="table custom-table table-bordered">
+                    <thead class="thead-light">
+                    <tr>
+                        <th scope="col" th:text="#{no}" class="text-center"></th>
+                        <th scope="col" th:text="#{isdn}" class="text-center"></th>
+                        <th scope="col" th:text="'Service code'" class="text-center"></th>
+                        <th scope="col" th:text="'Url'" class="text-center"></th>
+                        <th scope="col" th:text="#{status}" class="text-center"></th>
+                        <th scope="col" th:text="#{createdAt}" class="text-center"></th>
+                        <th scope="col" th:text="'Request'" class="text-center"></th>
+                        <th scope="col" th:text="'Response'" class="text-center"></th>
+                        <th scope="col" th:text="'Note'" class="text-center"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="model, item:${models}">
+                        <td class="text-center" th:text="${item.index + pageSize*currentPage - (pageSize - 1)}">1</td>
+                        <td th:text="${model.isdn}"></td>
+                        <td th:text="${model.serviceCode}"></td>
+                        <td th:text="${model.url}"></td>
+                        <td>
+                            <span th:if="${model.status == 0}" th:text="'Success'"></span>
+                            <span th:if="${model.status == 1}" th:text="'Fail'"></span>
+                        </td>
+                        <td th:text="${#dates.format(model.createdAt, 'yyyy-MM-dd HH:mm:ss')}" style="white-space: nowrap;" class="text-center"></td>
+                        <td th:text="${model.request}"></td>
+                        <td th:text="${model.response}"></td>
+                        <td th:text="${model.note}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div th:with="paramNames=${@thymeleaf.arrays('isdn', isdn, 'serviceCode', serviceCode, 'status', status, 'url', url, 'dateRanger', dateRanger)}">
+                    <div th:insert="common :: table-paging-hieutm(${currentPage}, ${pageSize}, ${totalPages}, ${totalItems}, ${paramNames})"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script layout:fragment="content_page_script" th:inline="javascript">
+</script>
+</html>

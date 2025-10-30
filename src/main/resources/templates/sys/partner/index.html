@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{cms_layout_1.html}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+</head>
+<body id="page-top">
+<div class="content" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form th:action="@{/sys/partner/index}" method="get">
+                    <div class="row">
+                        <div class="col-3" th:insert="component :: input-text-v3(#{name}, 'name', *{name}, 0, 255, false, false, false)"></div>
+
+                        <div class="col-9 pt-4">
+                            <button type="submit" style="cursor: pointer;" class="btn btn-primary mx-2">
+                                <i class="fas fa-search"></i><span class="px-2" th:text="#{search}"></span>
+                            </button>
+                            <button id="reset" type="button" value="Reset" style="cursor: pointer;"
+                                    class="btn btn-primary mx-2">
+                                <i class="fa fa-refresh"></i><span class="px-2" th:text="#{reset}"></span>
+                            </button>
+                            <a th:href="@{/sys/partner/create}" style="cursor: pointer;" class="btn btn-primary mx-2">
+                                <i class="fas fa-plus"></i><span class="px-2" th:text="#{create}"></span>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="table_router">
+                    <table class="table custom-table table-bordered">
+                        <thead class="thead-light">
+                        <tr>
+                            <th class="text-center" scope="col" th:text="#{no}"></th>
+                            <th class="text-center" scope="col" th:text="#{name}"></th>
+                            <th class="text-center" scope="col" th:text="#{partnerId}"></th>
+<!--                            <th class="text-center" scope="col" th:text="#{partnerCode}"></th>-->
+                            <th class="text-center" scope="col" th:text="#{status}"></th>
+                            <th class="text-center" scope="col" th:text="#{createdAt}"></th>
+                            <th class="text-center" scope="col" th:text="#{updatedAt}"></th>
+                            <th class="text-center" scope="col" th:text="#{action}"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="model ,item:${models}">
+                            <td class="text-center"
+                                th:text="${item.index + pageSize*currentPage - (pageSize-1)}">
+                            </td>
+                            <td th:text="${model.name}"></td>
+                            <td th:text="${model.id}"></td>
+<!--                            <td th:text="${model.code}"></td>-->
+                            <td class="text-center">
+                                <span th:if="${model.status == 1}" th:title="#{active}">
+                                    <i class="fas fa-check-circle" style="color: green;"></i>
+                                </span>
+                                <span th:if="${model.status == 0}" th:title="#{deactive}">
+                                    <i class="far fa-times-circle" style="color: red;"></i>
+                                </span>
+                            </td>
+                            <td class="text-nowrap text-center" th:text="${#dates.format(model.createdAt, 'dd-MM-yyyy MM:mm:ss')}"></td>
+                            <td class="text-nowrap text-center" th:text="${#dates.format(model.updatedAt, 'dd-MM-yyyy MM:mm:ss')}"></td>
+                            <td class="text-center">
+                                <div>
+                                    <a th:href="@{'/sys/partner/update/'+${model.id}}" title="Update" class="btn p-0">
+                                        <i class="far fa-edit m-2" style="color: #00709e;"></i>
+                                    </a>
+                                    <a th:href="@{/tps-partner/index(partnerId=${model.id})}" title="Setting OA, Noti" class="btn p-0">
+                                        <i class="fa-solid fa-gear m-2" style="color: #00709e;"></i>
+                                    </a>
+                                    <a th:attr="onclick=|delete1('${model.id}', '${currentPage}', '${pageSize}')|"
+                                       title="Delete"
+                                       style="cursor: pointer;">
+                                        <i class="fas fa-trash-alt" style="color: #ff0000;"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div th:with="paramNames=${T(java.util.Arrays).asList('name', name)}">
+                    <div th:insert="common :: table-paging-hieutm(${currentPage}, ${pageSize}, ${totalPages}, ${totalItems}, ${paramNames})"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="delete-modal-sm">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" th:text="#{action.todo}"></h4>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button id="apply" type="button" class="btn btn-primary" th:text="#{apply}"></button>
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" layout:fragment="content_page_script" th:inline="javascript">
+    function delete1(id, page, pageSize) {
+      if(page == null || page == "" || page == "null")
+          page = 1;
+      if(pageSize == null || pageSize == "" || pageSize == "null")
+          pageSize = 10;
+
+      callApiCheckHaveAppStatus012(id);
+
+        $("#apply").click(function() {
+              window.location.href = [[${@environment.getProperty('server.servlet.context-path')}]] + `/sys/partner/delete/${page}?id=${id}&pageSize=${pageSize}`;
+              $('#delete-modal-sm').modal('hide');
+        });
+  }
+
+      function callApiCheckHaveAppStatus012(id) {
+          $.ajax({
+              url: [[${@environment.getProperty('server.servlet.context-path')}]] + `/mini-app/count-have-app-status-012?partnerId=${id}`,
+              type: 'GET',
+              success: function(response) {
+                  console.log('Dữ liệu đã nhận:', response);
+                  if(response > 0) {
+                      let textt = [[#{warn.delete.partner}]];
+                      textt = textt.replace('()', response);
+                      $('.modal-title').text(textt);
+                  } else
+                      $('.modal-title').text([[#{action.todo}]]);
+
+                  $("#delete-modal-sm").modal('show');
+              },
+              error: function(xhr, status, error) {
+                  console.error('Lỗi khi gọi API:', error);
+              }
+          });
+      }
+</script>
+</html>

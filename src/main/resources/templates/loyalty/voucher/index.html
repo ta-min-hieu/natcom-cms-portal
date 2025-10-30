@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{cms_layout_1.html}">
+<head>
+</head>
+<body id="page-top">
+<div class="content" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form th:action="@{'/loyalty/voucher/index'}" method="get">
+                    <div class="row">
+                        <div class="col-3" th:insert="component :: input-text-v3(#{isdn}, 'isdn', *{isdn}, 0, 255, false, false, false)"></div>
+                        <div class="col-3" th:insert="component :: input-text-v3(#{voucherGroupName}, 'voucherGroupName', *{voucherGroupName}, 0, 255, false, false, false)"></div>
+                        <div class="col-3" th:insert="component :: select2-v2('GET', #{topicId}, 'topicId', *{topicId}, '/loyalty/voucher-topic/ajax-search', 'Choose topic', *{topic?.name}, false, false, 0, null)"></div>
+                        <div class="col-3" th:insert="component :: select2-v2('GET', #{idMerchant}, 'merchantId', *{merchantId}, '/loyalty/merchant/ajax-search', 'Choose merchant', *{merchant?.name}, false, false, 0, null)"></div>
+
+                        <!--                        <div class="col-3" th:with="options=${@thymeleaf.arrays('', 'All', '1', 'Active', '0', 'In-active')}">-->
+                        <!--                            <div th:replace="component :: select-default-v2(#{status}, 'status', *{status}, false, false, ${options})"></div>-->
+                        <!--                        </div>-->
+                        <!--                        <div class="col-3" th:insert="component :: input-date-ranger-v2(#{dateExpired}, 'dateExpireds', *{dateExpireds}, false, false, 'YYYY-MM-DD', 6, 0)"></div>-->
+
+                        <div th:class="'col-12 text-center pt-3'" class="col-12 text-center pt-3">
+                            <button type="submit" style="cursor: pointer;" class="btn btn-primary mx-2">
+                                <i class="fas fa-search"></i><span class="px-2" th:text="#{search}"></span>
+                            </button>
+                            <button id="reset" type="button" value="Reset" style="cursor: pointer;" class="btn btn-primary mx-2">
+                                <i class="fa fa-refresh"></i><span class="px-2" th:text="#{reset}"></span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body table-responsive">
+                <table class="table custom-table table-bordered">
+                    <thead class="thead-light">
+                    <tr>
+                        <th scope="col" th:text="#{no}" class="text-center"></th>
+                        <th scope="col" th:text="#{code}" class="text-center"></th>
+                        <th scope="col" th:text="#{voucherGroupName}" class="text-center"></th>
+                        <th scope="col" th:text="#{isdn}" class="text-center"></th>
+                        <th scope="col" th:text="#{icon}" class="text-center"></th>
+                        <th scope="col" th:text="#{topicName}" class="text-center"></th>
+                        <th scope="col" th:text="#{merchantName}" class="text-center"></th>
+                        <th scope="col" th:text="#{point}" class="text-center"></th>
+                        <th scope="col" th:text="#{discountAmount}" class="text-center"></th>
+                        <th scope="col" th:text="#{startDate}" class="text-center"></th>
+                        <th scope="col" th:text="#{dateExpired}" class="text-center"></th>
+                        <th scope="col" th:text="#{usedDate}" class="text-center"></th>
+                        <th scope="col" th:text="#{createdAt}" class="text-center"></th>
+                        <th scope="col" th:text="#{status}" class="text-center"></th>
+                        <th scope="col" th:text="#{action}" class="text-center"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="model, item:${models}">
+                        <td class="text-center" th:text="${item.index + pageSize*currentPage - (pageSize - 1)}">1</td>
+                        <td th:text="${model.code}"></td>
+                        <td th:text="${model.voucherGroupName}"></td>
+                        <td th:text="${model.isdn}"></td>
+                        <td class="text-center">
+                            <div th:if="${model.imageUrl}" class="dropdown">
+                                <img class="dropdown-toggle" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                     style="height: 35px;width:35px" th:src="${@thymeleaf.mediaUrl(model.imageUrl)}">
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                    <img style="height: 200px;width:200px" th:src="${@thymeleaf.mediaUrl(model.imageUrl)}">
+                                </div>
+                            </div>
+                        </td>
+                        <td th:text="${model.topicName}"></td>
+                        <td th:text="${model.merchantName}"></td>
+                        <td th:text="${@thymeleaf.formatNumber(model?.maxPoint) + ' ' + model?.pointUnit}"></td>
+                        <td th:text="${@thymeleaf.formatNumber(model?.discountAmount) + ' ' + model?.discountUnit}"></td>
+                        <td th:text="${#dates.format(model.startDate, 'yyyy-MM-dd HH:mm:ss')}" style="white-space: nowrap;" class="text-center"></td>
+                        <td th:text="${#dates.format(model.endDate, 'yyyy-MM-dd HH:mm:ss')}" style="white-space: nowrap;" class="text-center"></td>
+                        <td th:text="${#dates.format(model.usedDate, 'yyyy-MM-dd HH:mm:ss')}" style="white-space: nowrap;" class="text-center"></td>
+                        <td th:text="${#dates.format(model.createdAt, 'yyyy-MM-dd HH:mm:ss')}" style="white-space: nowrap;" class="text-center"></td>
+                        <td class="text-right">
+                            <span th:if="${model.status == 0}" th:text="'Exchanged'"></span>
+                            <span th:if="${model.status == 1}" th:text="'Used'"></span>
+                        </td>
+                        <td class="text-center" style="white-space: nowrap;">
+                            <div class="d-flex justify-content-center align-items-center flex-wrap" style="gap: 5px;">
+                                <a th:if="${model.status == 0}" th:attr="onclick=|updateStatus('${model.id}', '${currentPage}', '${pageSize}', 1)|" title="Exchanged to Used" class="btn"><i class="fas fa-retweet" style="color: #74C0FC;"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div th:with="paramNames=${@thymeleaf.arrays('isdn', isdn, 'voucherGroupName', voucherGroupName, 'topicId', topicId, 'merchantId', merchantId)}">
+                    <div th:insert="common :: table-paging-hieutm(${currentPage}, ${pageSize}, ${totalPages}, ${totalItems}, ${paramNames})"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="delete-modal-sm">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" th:text="'Edit souvenir order'"></h4>
+                </div>
+                <div class="modal-body">
+                    <p>Status</p>
+                    <div style="display: flex;">From: <div id="from" style="margin-left: 5px; margin-right: 15px; border: 1px solid black; border-radius: 5px; padding: 2px;"></div> To: <div id="to" style="margin-left: 5px; border: 1px solid black; border-radius: 5px; padding: 2px;"></div></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal" style="background-color: #DFDFDF">Close</button>
+                    <button id="apply" type="submit" class="btn" th:text="#{apply}" style="background-color: #FC6D05; color: #FFFFFF"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script layout:fragment="content_page_script" th:inline="javascript">
+    function updateStatus(id, page, pageSize, status) {
+        if(page == null || page == "" || page == "null")
+            page = 1;
+
+        if(status == 1) {
+            $('#from').text('Exchanged');
+            $('#to').text('Used');
+        }
+
+        $("#delete-modal-sm").modal('show');
+        $("#apply").click(function() {
+            window.location.href = [[${@environment.getProperty('server.servlet.context-path')}]] + `/loyalty/voucher/update-status/${page}?id=${id}&pageSize=${pageSize}&status=${status}&isdn=${[[${isdn}]]}&voucherGroupName=${[[${voucherGroupName}]]}&topicId=${[[${topicId == null ? '' : topicId}]]}&merchantId=${[[${merchantId == null ? '' : merchantId}]]}`;
+            $('#delete-modal-sm').modal('hide');
+        });
+    }
+</script>
+</html>

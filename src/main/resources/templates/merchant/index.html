@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{kakoak_layout_buu.html}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<div class="content" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form th:action="@{/merchant/index}" method="get">
+                    <div class="row">
+                        <div class="col-3 mb-3" th:insert="buu-component :: input-text(#{owner-phonenumber}, 'ownerPhoneNumber', ${ownerPhoneNumber}, 0, 255, false, false)"></div>
+                        <div th:unless="${@permissionVoucher.checkAdminVoucher()}" class="col-3 mb-3" th:with="options=${T(java.util.Arrays).asList(
+                            '', 'All',
+                            '2', 'Draft',
+                            '3', 'Waiting Approve',
+                            '1', 'Active',
+                            '0', 'Locked',
+                            '4', 'Rejected'
+                        )}">
+                            <div th:replace="buu-component :: select-default-v2(#{vg-status}, 'status', ${status}, false, false, ${options})"></div>
+                        </div>
+                        <div th:if="${@permissionVoucher.checkAdminVoucher()}" class="col-3 mb-3" th:with="options=${T(java.util.Arrays).asList(
+                            '', 'All',
+                            '3', 'Waiting Approve',
+                            '1', 'Active',
+                            '0', 'Locked',
+                            '4', 'Rejected'
+                        )}">
+                            <div th:replace="buu-component :: select-default-v2(#{vg-status}, 'status', ${status}, false, false, ${options})"></div>
+                        </div>
+                        <div class="col-3 mb-3" th:insert="buu-component :: input-text(#{name}, 'name', ${name}, 0, 255, false, false)"></div>
+                        <div class="col-3 mb-3" th:insert="buu-component :: input-date-ranger-v3(#{vg-date}, 'rangerDate', ${rangerDate}, false, false, 'DD/MM/YYYY', 3, 0, false)"></div>
+
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-primary my-0 mx-1">
+                                <i class="fas fa-search"></i><span class="px-2" th:text="#{voucher-search}">Search</span>
+                            </button>
+                            <button id="btn-reset" type="button" class="btn btn-primary my-0 mx-1">
+                                <i class="fas fa-refresh"></i><span class="px-2" th:text="#{voucher-refresh}">Reset</span>
+                            </button>
+<!--                            <a th:unless="${@permissionVoucher.checkAdminVoucher()}" th:href="@{/merchant/form}" class="btn btn-primary my-0 mx-1">-->
+<!--                                <i class="fas fa-plus"></i><span class="px-2" th:text="#{voucher-create}">Create</span>-->
+<!--                            </a>-->
+                            <a th:unless="${@permissionVoucher.checkAdminVoucher()}" th:href="@{/merchant/create-draft}" class="btn btn-primary my-0 mx-1">
+                                <i class="fas fa-plus"></i><span class="px-2" th:text="#{create-draft}">Create Draft</span>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+
+                <form id="formCreateDraftApproved" th:action="@{/merchant/create-draft-v2}" method="POST">
+                    <input hidden="hidden" id="idCreateDraftApproved" name="id" value="">
+                </form>
+            </div>
+        </div>
+
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="table-responsive mb-2 mt-3">
+                    <table class="table table-sm custom-table table-bordered table-hover text-center" style="table-layout: auto; width: 100%; font-weight: 600;">
+                        <thead class="thead-light align-content-center">
+                        <tr>
+                            <th class="align-content-center" style="width: 0%" th:text="#{no}"></th>
+                            <th class="align-content-center" style="width: 0%" th:text="#{m-code}">Merchant code</th>
+                            <th class="align-content-center" style="width: 1%" th:text="#{m-name}">Merchant name</th>
+                            <th class="align-content-center" style="width: 0%" th:text="#{list-of-submerchant}">List of sub-merchant</th>
+                            <th class="align-content-center" style="width: 0%" th:text="#{owner-name}">Owner name</th>
+                            <th class="align-content-center" style="width: 0%" th:text="#{owner-phonenumber}">Owner phone number</th>
+                            <th class="align-content-center" style="width: 0%" th:text="#{number-of-staff}">Number of staff</th>
+                            <th class="align-content-center" style="width: 0%" th:text="#{vg-status}">Status</th>
+                            <th class="align-content-center" style="width: 0%" th:text="#{typee}">Type</th>
+                            <th class="align-content-center" style="width: 0%" th:text="#{updatedAt}">Updated at</th>
+                            <th style="width: 0%"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr onclick="activeRowTable(event)" th:each="model,item : ${models}" th:attr="data-id=${model.id}">
+                            <td  class="text-center"
+                                 th:text="${item.index + pageSize * pageNo - (pageSize - 1)}">
+                            </td>
+
+                            <td style="text-align: left;" th:text="${model.code}"></td>
+                            <td style="text-align: start;" th:text="${model.name}"></td>
+                            <td th:text="${#numbers.formatDecimal(model.totalSubMerchant, 1, 'COMMA', 0, 'POINT')}"></td>
+                            <td style="text-align: start;" th:text="${model.ownerName}"></td>
+                            <td style="text-align: start;" th:text="${model.ownerPhoneNumber}"></td>
+                            <td th:text="${#numbers.formatDecimal(model.totalStaff, 1, 'COMMA', 0, 'POINT')}"></td>
+                            <td>
+                                <span th:if="${model.status == 0}" class="badge badge-warning" style="white-space: normal;">Locked</span>
+                                <span th:if="${model.status == 1}" class="badge badge-success" style="white-space: normal;">Active</span>
+                                <span th:if="${model.status == 2}" class="badge badge-secondary" style="white-space: normal;">Draft</span>
+                                <span th:if="${model.status == 3}" class="badge badge-info" style="white-space: normal;">Waiting Approve</span>
+                                <span th:if="${model.status == 4}" class="badge badge-danger" style="white-space: normal;">Rejected</span>
+                            </td>
+                            <td>
+                                <span th:if="${model.draftFor == null && model.status != 0 && model.status != 1}" class="badge badge-warning" style="white-space: normal;">Create</span>
+                                <span th:if="${model.draftFor != null && model.status != 0 && model.status != 1}" class="badge badge-warning" style="white-space: normal;">Update</span>
+                                <span th:if="${model.draftFor == null && (model.status == 0 || model.status == 1)}" class="badge badge-success" style="white-space: normal;">Official</span>
+                            </td>
+                            <td th:text="${#dates.format(model.updatedAt, 'dd/MM/yyyy HH:mm:ss')}"></td>
+
+                            <td>
+                                <div class="d-flex">
+                                    <!--Admin-->
+                                    <th:block th:if="${@permissionVoucher.checkAdminVoucher()}">
+                                        <a title="Detail" th:href="@{/merchant/form(id=${model.id})}" class="btn btn-sm">
+                                            <i class="fas fa-eye" style="color: #00709e;"></i>
+                                        </a>
+                                        <a th:if="${model.status == 3 || model.status == 4}" th:attr="onclick=|approveAll([${model.id}])|" style="cursor: pointer; align-content: center;" title="Approve" class="btn btn-sm">
+                                            <i class="fas fa-check-circle text-success"></i>
+                                        </a>
+                                        <a th:if="${model.status == 3}" th:attr="onclick=|disapproveAll([${model.id}])|" style="cursor: pointer; align-content: center;" title="Reject" class="btn btn-sm">
+                                            <i class="fas fa-times-circle text-danger"></i>
+                                        </a>
+                                        <a th:if="${model.status == 1}" th:attr="onclick=|lockAll([${model.id}])|" style="cursor: pointer; align-content: center;" title="Lock" class="btn btn-sm">
+                                            <i class="fas fa-lock text-warning"></i>
+                                        </a>
+                                        <a th:if="${model.status == 0}" th:attr="onclick=|unlockAll([${model.id}])|" style="cursor: pointer; align-content: center;" title="Unlock" class="btn btn-sm">
+                                            <i class="fas fa-lock-open text-warning"></i>
+                                        </a>
+                                    </th:block>
+                                    <!--Staff-->
+                                    <th:block th:unless="${@permissionVoucher.checkAdminVoucher()}">
+                                        <a th:href="@{/merchant/form(id=${model.id})}" class="btn btn-sm" th:title="${model.status == 3 || model.status == 1 || model.status == 0 ? 'Detail' : 'Edit'}">
+                                            <i th:class="${model.status == 3 || model.status == 1 || model.status == 0 ? 'fas fa-eye' : 'far fa-edit'}" style="color: #00709e;"></i>
+                                        </a>
+                                        <a th:if="${model.status == 1 || model.status == 0}" th:attr="onclick=|createDraftApproved(${model.id})|" class="btn btn-sm" title="Edit">
+                                            <i class="far fa-edit" style="color: #00709e;"></i>
+                                        </a>
+                                        <a th:if="${model.status == 2}" th:attr="onclick=|event.stopPropagation(); deleteRecord({action: '@{'/merchant/delete/'+${model.id}}', method: 'POST'})|" style="cursor: pointer; align-content: center;" title="Delete" class="btn btn-sm">
+                                            <i class="fas fa-trash-alt" style="color: #ff0000;"></i>
+                                        </a>
+                                    </th:block>
+                                    <a th:if="${model.status == 4}" th:attr="onclick=|seeReason([${model.id}])|" style="cursor: pointer; align-content: center;" title="Reason reject" class="btn btn-sm">
+                                        <i class="fas fa-info-circle" style="color: #00709e;"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${models?.size() == 0}">
+                            <td colspan="100">No result</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <hungtvt-pagination th:replace="buu-component :: pagination(${pageNo}, ${totalPage}, ${pageSize}, 'buuPageSize', 'buuPagination')"></hungtvt-pagination>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- PAGE JAVASCRIPT CODE -->
+<script layout:fragment="content_page_script">
+    $('#btn-reset').click((e) => {
+        $('#ownerPhoneNumber').val('');
+        $('#name').val('');
+        $('#status').val('');
+        $('#rangerDate').val('');
+    });
+
+    function approveAll(ids) {
+        Swal.fire({
+            title: "[[#{vg-question-approve}]]",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "[[#{vg-confirm}]]",
+            cancelButtonText: "[[#{vg-cancel}]]"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                toastLoading();
+                $.ajax({
+                    url: "[[@{'/merchant/approveAll'}]]",
+                    type: 'POST',
+                    data: {ids},
+                    traditional: true,
+                    success: (data) => {
+                        toastSuccess(data);
+                        window.location.reload();
+                    },
+                    error: (err) => {
+                        toastError("An error has occurred!")
+                    }
+                });
+            }
+        });
+    }
+
+    async function disapproveAll(ids) {
+        const { value: text } = await Swal.fire({
+            title: "[[#{vg-question-disapprove}]]",
+            input: "textarea",
+            inputPlaceholder: "[[#{vg-reason-disapprove}]]",
+            inputAttributes: {
+                "aria-label": "[[#{vg-reason-disapprove}]]"
+            },
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "[[#{vg-confirm}]]",
+            cancelButtonText: "[[#{vg-cancel}]]",
+            inputValidator: (value) => {
+                if (!value) {
+                    return "[[#{vg-reason-required}]]"; // Thông báo nếu không nhập lý do
+                }
+            }
+        });
+        if (text) {
+            toastLoading();
+            $.ajax({
+                url: "[[@{'/merchant/disapproveAll'}]]",
+                type: 'POST',
+                data: {ids: ids, reason: text},
+                traditional: true,
+                success: (data) => {
+                    toastSuccess(data);
+                    window.location.reload();
+                },
+                error: (err) => {
+                    toastError("An error has occurred!")
+                }
+            });
+        }
+    }
+
+    function lockAll(ids) {
+        Swal.fire({
+            title: "[[#{vg-question-lock}]]",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "[[#{vg-confirm}]]",
+            cancelButtonText: "[[#{vg-cancel}]]"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                toastLoading();
+                $.ajax({
+                    url: "[[@{'/merchant/lockAll'}]]",
+                    type: 'POST',
+                    data: {ids},
+                    traditional: true,
+                    success: (data) => {
+                        toastSuccess(data);
+                        window.location.reload();
+                    },
+                    error: (err) => {
+                        toastError("An error has occurred!")
+                    }
+                });
+            }
+        });
+    }
+
+    function unlockAll(ids) {
+        Swal.fire({
+            title: "[[#{vg-question-unlock}]]",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "[[#{vg-confirm}]]",
+            cancelButtonText: "[[#{vg-cancel}]]"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                toastLoading();
+                $.ajax({
+                    url: "[[@{'/merchant/unlockAll'}]]",
+                    type: 'POST',
+                    data: {ids},
+                    traditional: true,
+                    success: (data) => {
+                        toastSuccess(data);
+                        window.location.reload();
+                    },
+                    error: (err) => {
+                        toastError("An error has occurred!")
+                    }
+                });
+            }
+        });
+    }
+
+    function seeReason(id) {
+        toastLoading();
+        $.ajax({
+            url: "[[@{'/merchant/seeNote'}]]",
+            type: 'POST',
+            data: {id},
+            traditional: true,
+            success: (data) => {
+                Swal.fire({
+                    title: "[[#{vg-info-reject}]]",
+                    icon: "info",
+                    text: data,
+                    showConfirmButton: false,
+                    showCancelButton: true,
+                    cancelButtonColor: "#d33",
+                    cancelButtonText: "[[#{cancel}]]"
+                })
+            },
+            error: (err) => {
+                toastError("An error has occurred!")
+            }
+        });
+    }
+
+    function createDraftApproved(id) {
+        $('#idCreateDraftApproved').val(id);
+        $('#formCreateDraftApproved').submit();
+    }
+</script>
+</body>
+</html>
